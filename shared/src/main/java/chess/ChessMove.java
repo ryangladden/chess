@@ -7,6 +7,20 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessMove {
+    @Override
+    public int hashCode() {
+        if (this.promotionPiece == null) {
+            return startPosition.hashCode() * 31 + endPosition.hashCode() * 29;
+        }
+        return startPosition.hashCode()*31 + endPosition.hashCode() * 29 + promotionPiece.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+//        ChessMove other = (ChessMove) obj;
+//        return other.getStartPosition() == this.getStartPosition() && other.getEndPosition() == this.getEndPosition();
+        return this.hashCode() == obj.hashCode();
+    }
 
     private final ChessPosition startPosition;
     private final ChessPosition endPosition;

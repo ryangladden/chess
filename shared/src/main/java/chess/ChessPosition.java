@@ -11,6 +11,16 @@ public class ChessPosition {
     private final int row;
     private final int col;
 
+    @Override
+    public int hashCode() {
+        return (row + 1) * (col + 1);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.hashCode() == obj.hashCode();
+    }
+
     public ChessPosition(int row, int col) {
         this.row = row - 1;
         this.col = col - 1;
