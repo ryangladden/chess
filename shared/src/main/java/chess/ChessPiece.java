@@ -10,7 +10,17 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        return (this == obj);
+    }
+
+    //    private
     private ChessGame.TeamColor pieceColor;
     private ChessPiece.PieceType type;
 
@@ -53,6 +63,51 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<ChessMove>();
+        switch (this.type) {
+//            case KING:
+//                return KingMoveCalculator.pieceMoves(board, myPosition);
+            case QUEEN:
+                break;
+            case BISHOP:
+                break;
+            case KNIGHT:
+                break;
+            case ROOK:
+                break;
+            case PAWN:
+                break;
+        }
+        return java.util.List.of();
+    }
+    @Override
+    public String toString() {
+        String rep;
+        switch (type) {
+            case PAWN:
+                rep = "p";
+                break;
+            case ROOK:
+                rep = "r";
+                break;
+            case BISHOP:
+                rep = "b";
+                break;
+            case KNIGHT:
+                rep = "n";
+                break;
+            case KING:
+                rep = "k";
+                break;
+            case QUEEN:
+                rep = "q";
+                break;
+            case null:
+                rep = ".";
+                break;
+        }
+        if (this.pieceColor == ChessGame.TeamColor.BLACK) {
+            rep = rep.toUpperCase();
+        }
+        return rep;
     }
 }
