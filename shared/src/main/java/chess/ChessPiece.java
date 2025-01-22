@@ -12,12 +12,13 @@ import java.util.Collection;
 public class ChessPiece {
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return 31 * type.hashCode() * pieceColor.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return (this == obj);
+        ChessPiece other = (ChessPiece) obj;
+        return (other.type == this.type && other.pieceColor == this.pieceColor);
     }
 
     //    private
