@@ -6,10 +6,9 @@ public interface PieceMoveCalculator {
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
 
-    default boolean validateMove(ChessBoard board, ChessPosition myPosition, ChessPosition newPosition) {
-        if (board.getPiece(myPosition) == null) { return true; }
-        return (board.getPiece(myPosition).getPieceType() != board.getPiece(newPosition).getPieceType()
-                || !(newPosition.getRow() >= 1 && newPosition.getRow() <= 8 && newPosition.getColumn() >= 1 && newPosition.getColumn() <= 8)
-                || !(myPosition.getRow() == newPosition.getRow() && myPosition.getColumn() == newPosition.getColumn()));
+    default boolean validateMove(ChessBoard board, ChessPosition myPosition, int newRow, int newColumn) {
+        return ((newRow >= 1 && newRow <= 8 && newColumn >= 1 && newColumn <= 8)
+                && (board.getPiece(new ChessPosition(newRow, newColumn)) == null || board.getPiece(myPosition).getTeamColor() != board.getPiece(new ChessPosition(newRow, newColumn)).getTeamColor())
+                && !(myPosition.getRow() == newRow && myPosition.getColumn() == newColumn));
     }
 }

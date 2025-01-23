@@ -14,8 +14,8 @@ public class ChessPosition {
     @Override
     public int hashCode() {
         int hash = 0;
-        for (int i = 1; i <= row; i++) {
-            for (int j = 1; i <= col; i ++) {
+        for (int i = 100; i <= row + 100; i++) {
+            for (int j = 0; j <= col; j++) {
                 hash += i * j;
             }
         }
@@ -24,7 +24,9 @@ public class ChessPosition {
 
     @Override
     public boolean equals(Object obj) {
-        return this.hashCode() == obj.hashCode();
+        ChessPosition position = (ChessPosition) obj;
+        return (position.getRow() == this.getRow() && position.getColumn() == this.getColumn());
+//        return this.hashCode() == obj.hashCode();
     }
 
     public ChessPosition(int row, int col) {

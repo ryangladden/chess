@@ -9,7 +9,7 @@ public class KingMoveCalculator implements PieceMoveCalculator {
         Collection<ChessMove> possibilities = new ArrayList<>();
         for (int i = position.getRow() - 1; i <= position.getRow() + 1; i++) {
             for (int j = position.getColumn() - 1; j <= position.getColumn() + 1; j++) {
-                if (validateMove(board, position, new ChessPosition(i, j))) {
+                if (validateMove(board, position, i, j)) {
                     possibilities.add(new ChessMove(position, new ChessPosition(i,j)));
                 }
             }
@@ -17,17 +17,3 @@ public class KingMoveCalculator implements PieceMoveCalculator {
         return possibilities;
     }
 }
-
-//    @Override
-//    public static Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
-//        Collection<ChessMove> possibilities = new ArrayList<>();
-//        for (int i = position.getRow() - 1; i <= position.getRow() + 1; i++) {
-//            for (int j = position.getColumn() - 1; j <= position.getColumn() + 1; j++ ) {
-//                if (i >= 0 && i < 8 && j >= 0 && j< 8) {
-//                    possibilities.add(new ChessMove(position, new ChessPosition(i, j)));
-//                }
-//            }
-//        }
-//        return possibilities;
-//    }
-//}
