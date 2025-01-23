@@ -67,11 +67,11 @@ public class ChessPiece implements PieceMoveCalculator {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         PieceMoveCalculator moves = switch(getPieceType()) {
             case KING -> new KingMoveCalculator();
-            case QUEEN -> null;
-            case BISHOP -> null;
-            case KNIGHT -> null;
-            case ROOK -> null;
-            case PAWN -> null;
+            case QUEEN -> new QueenMoveCalculator();
+            case BISHOP -> new BishopMoveCalculator();
+            case KNIGHT -> new KnightMoveCalculator();
+            case ROOK -> new RookMoveCalculator();
+            case PAWN -> new PawnMoveCalculator();
         };
         return moves.pieceMoves(board,myPosition);
     }
