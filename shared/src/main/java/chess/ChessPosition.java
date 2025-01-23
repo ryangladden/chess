@@ -13,7 +13,13 @@ public class ChessPosition {
 
     @Override
     public int hashCode() {
-        return (row + 1) * (col + 1);
+        int hash = 0;
+        for (int i = 1; i <= row; i++) {
+            for (int j = 1; i <= col; i ++) {
+                hash += i * j;
+            }
+        }
+        return hash;
     }
 
     @Override
@@ -31,7 +37,7 @@ public class ChessPosition {
      * 1 codes for the bottom row
      */
     public int getRow() {
-        return row;
+        return row + 1;
     }
 
     /**
@@ -39,11 +45,11 @@ public class ChessPosition {
      * 1 codes for the left row
      */
     public int getColumn() {
-        return col;
+        return col + 1;
     }
 
     @Override
     public String toString() {
-        return "{" + this.row +", " + this.col + "}";
+        return "{" + (this.row + 1) +", " + (this.col + 1) + "}";
     }
 }

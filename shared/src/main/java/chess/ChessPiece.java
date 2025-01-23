@@ -9,7 +9,7 @@ import java.util.Collection;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessPiece {
+public class ChessPiece implements PieceMoveCalculator {
     @Override
     public int hashCode() {
         return 31 * type.hashCode() * pieceColor.hashCode();
@@ -23,9 +23,10 @@ public class ChessPiece {
 
     //    private
     private ChessGame.TeamColor pieceColor;
-    private ChessPiece.PieceType type;
+    private PieceType type;
+    private PieceMoveCalculator moveCalculator;
 
-    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+    public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
     }
@@ -64,21 +65,15 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        switch (this.type) {
-//            case KING:
-//                return KingMoveCalculator.pieceMoves(board, myPosition);
-            case QUEEN:
-                break;
-            case BISHOP:
-                break;
-            case KNIGHT:
-                break;
-            case ROOK:
-                break;
-            case PAWN:
-                break;
-        }
-        return java.util.List.of();
+        PieceMoveCalculator moves = switch(getPieceType()) {
+            case KING -> new KingMoveCalculator();
+            case QUEEN -> null;
+            case BISHOP -> null;
+            case KNIGHT -> null;
+            case ROOK -> null;
+            case PAWN -> null;
+        };
+        return moves.pieceMoves(board,myPosition);
     }
     @Override
     public String toString() {

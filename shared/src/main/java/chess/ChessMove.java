@@ -59,4 +59,9 @@ public class ChessMove {
     public ChessPiece.PieceType getPromotionPiece() {
         return promotionPiece;
     }
+
+    @Override
+    public String toString() {
+        return new String(("{" + startPosition.getRow() + "," + startPosition.getColumn() + "} -> {" + endPosition.getRow() + "," + endPosition.getColumn() + "}\n"));
+    }
 }
