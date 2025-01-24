@@ -1,3 +1,4 @@
+
 package chess;
 
 import java.util.ArrayList;
@@ -235,4 +236,4 @@ public interface PieceMoveCalculator {
 //    default boolean isCapture(ChessBoard board, ChessMove move) {
 //        return board.getPiece(move.getEndPosition()) != null && board.getPiece(move.getStartPosition()).getTeamColor() != board.getPiece(move.getEndPosition()).getTeamColor();
 //        }
-    }
+}

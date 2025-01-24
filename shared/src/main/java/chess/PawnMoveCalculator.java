@@ -44,12 +44,6 @@ public class PawnMoveCalculator implements PieceMoveCalculator {
                 } else {
                     possibilities.add(right);
                 }
-                if (isValidMove(board, myPosition, myPosition.getRow() + 2 * direction, myPosition.getColumn() + 1)) {
-                    ChessMove right2 = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 2 * direction, myPosition.getColumn() + 1));
-                    if (isCapture(board, right2)) {
-                        possibilities.add(right2);
-                    }
-                }
             }
         }
         if (isValidMove(board, myPosition, myPosition.getRow() + 1 * direction, myPosition.getColumn() - 1)) {
@@ -62,12 +56,6 @@ public class PawnMoveCalculator implements PieceMoveCalculator {
                     possibilities.add(new ChessMove(left.getStartPosition(), left.getEndPosition(), ChessPiece.PieceType.KNIGHT));
                 } else {
                     possibilities.add(left);
-                }
-                if (isValidMove(board, myPosition,myPosition.getRow() + 2 * direction, myPosition.getColumn() - 1)) {
-                    ChessMove left2 = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 2 * direction, myPosition.getColumn() - 1));
-                    if (isCapture(board, left2)) {
-                        possibilities.add(left2);
-                    }
                 }
             }
         }
