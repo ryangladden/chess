@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
+
 /**
  * Represents moving a chess piece on a chessboard
  * <p>
@@ -62,6 +64,9 @@ public class ChessMove {
 
     @Override
     public String toString() {
+        if (promotionPiece != null) {
+            return new String(("{" + startPosition.getRow() + "," + startPosition.getColumn() + "} -> {" + endPosition.getRow() + "," + endPosition.getColumn() + "} " + promotionPiece + "\n"));
+        }
         return new String(("{" + startPosition.getRow() + "," + startPosition.getColumn() + "} -> {" + endPosition.getRow() + "," + endPosition.getColumn() + "}\n"));
     }
 }
