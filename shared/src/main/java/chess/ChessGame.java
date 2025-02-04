@@ -67,8 +67,7 @@ public class ChessGame {
                 || !validMoves(move.getStartPosition()).contains(move)) {
             throw new InvalidMoveException("You can't make that move, silly");
         }
-        if (turnColor == TeamColor.BLACK) { turnColor = TeamColor.WHITE; }
-        else { turnColor = TeamColor.BLACK; }
+        changeTeams();
     }
 
     /**
@@ -78,7 +77,16 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-
+        ChessPosition king = getKing(teamColor);
+        Collection<ChessPosition> otherPositions = (teamColor == TeamColor.BLACK) ? getPiecePositions(TeamColor.WHITE) : getPiecePositions(TeamColor.BLACK);
+        for (var pos : otherPositions) {
+            for (var move : (board.getPiece(pos).pieceMoves(board, pos))) {
+                if (move.getEndPosition() == king) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -88,7 +96,8 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+//        return (isInCheck(teamColor) && board.getPiece(getKing(teamColor)).pieceMoves(board, getKing(teamColor)).isEmpty());
+        return true;
     }
 
     /**
@@ -126,10 +135,37 @@ public class ChessGame {
         for (int i = 1; i <= 7; i++) {
             for (int j = 1; j <= 7; j++) {
                 if (board.getPiece(i, j) != null) {
-                    pieces.add
+                    pieces.add(new ChessPosition(i, j));
                 }
             }
         }
         return pieces;
+    }
+
+    private Collection<ChessPosition> getPiecePositions(TeamColor teamColor) {
+        Collection<ChessPosition> pieces = getPiecePositions();
+        for (ChessPosition pos : pieces) {
+            if (board.getPiece(pos).getTeamColor() != teamColor) {
+                pieces.remove(pos);
+            }
+        }
+        return pieces;
+    }
+
+
+    private ChessPosition getKing(TeamColor teamColor) {
+        Collection<ChessPosition> pieces = getPiecePositions();
+        for (ChessPosition pos : pieces) {
+            if (board.getPiece(pos).getPieceType() == ChessPiece.PieceType.KING
+                && board.getPiece(pos).getTeamColor() == teamColor) {
+                return pos;
+            }
+        }
+        return null;
+    }
+
+    private void changeTeams() {
+        if (turnColor == TeamColor.BLACK) { turnColor = TeamColor.WHITE; }
+        else { turnColor = TeamColor.BLACK; }
     }
 }
