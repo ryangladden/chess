@@ -34,6 +34,10 @@ public class ChessBoard {
         return squares[position.getRow() - 1][position.getColumn() - 1];
     }
 
+    public ChessPiece getPiece(int row, int col) {
+        return squares[row][col];
+    }
+
     @Override
     public int hashCode() {
 //        int hash = 1;
@@ -104,7 +108,6 @@ public class ChessBoard {
     }
 
     public String toString() {
-        System.out.println(this.hashCode());
         StringBuilder rep = new StringBuilder();
         for (int i = 0; i <= 7; i++) {
             rep.append(" ");
