@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Arrays;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessBoard {
+public class ChessBoard implements Cloneable {
 
     private ChessPiece[][] squares = new ChessPiece[8][8];
     public ChessBoard() {}
@@ -117,5 +118,23 @@ public class ChessBoard {
             rep.append("\n");
         }
         return rep.toString();
+    }
+
+    @Override
+    public ChessBoard clone() {
+        try {
+            ChessPiece[][] squares = new ChessPiece[8][8];
+            ChessBoard clone = (ChessBoard) super.clone();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    squares[i][j] = clone.getPiece(i, j);
+                }
+            }
+            clone.squares = squares;
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+        return null;
     }
 }

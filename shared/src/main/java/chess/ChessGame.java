@@ -1,7 +1,9 @@
 package chess;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -9,7 +11,7 @@ import java.util.Collection;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessGame {
+public class ChessGame implements Cloneable{
 
     private ChessBoard board;
     private TeamColor turnColor;
@@ -36,6 +38,22 @@ public class ChessGame {
         turnColor = team;
     }
 
+    @Override
+    public ChessGame clone() {
+        try {
+            ChessGame clone = (ChessGame) super.clone();
+            if (this.turnColor == TeamColor.BLACK) {
+                clone.turnColor = TeamColor.BLACK;
+            }
+            else { clone.turnColor = TeamColor.WHITE; }
+            clone.board = this.board.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
@@ -52,7 +70,21 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        return board.getPiece(startPosition).pieceMoves(board, startPosition);
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) { return Collections.emptyList(); }
+        else if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+            ChessGame clone = this.clone();
+            ArrayList<ChessMove> valid = new ArrayList<>();
+            for (ChessMove move : piece.pieceMoves(clone.getBoard(), startPosition)) {
+                clone.board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), ChessPiece.PieceType.KING));
+                clone.board.addPiece(move.getStartPosition(), null);
+                if (clone.isInCheck(piece.getTeamColor())) {
+                    valid.add(move);
+                }
+            }
+            return valid;
+        }
+            return piece.pieceMoves(board, startPosition);
     }
 
     /**
@@ -132,8 +164,8 @@ public class ChessGame {
 
     private Collection<ChessPosition> getPiecePositions() {
         Collection<ChessPosition> pieces = new ArrayList<>();
-        for (int i = 1; i <= 7; i++) {
-            for (int j = 1; j <= 7; j++) {
+        for (int i = 0; i <= 7; i++) {
+            for (int j = 0; j <= 7; j++) {
                 if (board.getPiece(i, j) != null) {
                     pieces.add(new ChessPosition(i, j));
                 }
@@ -167,5 +199,8 @@ public class ChessGame {
     private void changeTeams() {
         if (turnColor == TeamColor.BLACK) { turnColor = TeamColor.WHITE; }
         else { turnColor = TeamColor.BLACK; }
+    }
+    private TeamColor getTurnColor() {
+        return this.turnColor;
     }
 }

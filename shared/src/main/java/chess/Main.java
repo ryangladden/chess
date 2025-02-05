@@ -5,5 +5,9 @@ public class Main {
         chess.ChessBoard board = new ChessBoard();
         board.resetBoard();
         System.out.print(board);
+
+        ChessPiece piece = board.getPiece(0, 4);
+        System.out.print(piece);
+
         }
     }
