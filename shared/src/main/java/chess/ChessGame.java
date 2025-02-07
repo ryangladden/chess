@@ -66,7 +66,8 @@ public class ChessGame implements Cloneable{
             clone.board.addPiece(move.getEndPosition(), clone.board.getPiece(move.getStartPosition()));
             clone.board.addPiece(move.getStartPosition(), null);
 //                clone.makeMove(move);
-            if (!clone.isInCheck(piece.getTeamColor()) && !clone.isInCheckmate(piece.getTeamColor())) {
+            var color = piece.getTeamColor();
+            if (!clone.isInCheck(color) && !clone.isInCheckmate(color) && !clone.isInStalemate(color)) {
                 validMoves.add(move);
             }
         }
@@ -162,7 +163,26 @@ public class ChessGame implements Cloneable{
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        boolean stalemate = false;
+        if (!isInCheck(teamColor)) {
+            stalemate = true;
+            for (var pos : getPiecePositions(teamColor)) {
+                for (var move : board.getPiece(pos).pieceMoves(board, pos)) {
+                    ChessGame clone = this.clone();
+//                    clone.makeMove(move);
+                    clone.board.addPiece(move.getEndPosition(), clone.board.getPiece(move.getStartPosition()));
+                    clone.board.addPiece(move.getStartPosition(), null);
+                    if (!clone.isInCheck(teamColor)) {
+                        stalemate = false;
+                        break;
+                    }
+                }
+                if (!stalemate) {
+                    break;
+                }
+            }
+        }
+        return stalemate;
     }
 
     /**
