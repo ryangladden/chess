@@ -135,22 +135,7 @@ public class ChessGame implements Cloneable{
     public boolean isInCheckmate(TeamColor teamColor) {
         boolean checkmate = false;
         if (isInCheck(teamColor)) {
-            checkmate = true;
-            for (var pos : getPiecePositions(teamColor)) {
-                for (var move : board.getPiece(pos).pieceMoves(board, pos)) {
-                    ChessGame clone = this.clone();
-//                    clone.makeMove(move);
-                    clone.board.addPiece(move.getEndPosition(), clone.board.getPiece(move.getStartPosition()));
-                    clone.board.addPiece(move.getStartPosition(), null);
-                    if (!clone.isInCheck(teamColor)) {
-                        checkmate = false;
-                        break;
-                    }
-                }
-                if (!checkmate) {
-                    break;
-                }
-            }
+            checkmate = noMoves(teamColor);
         }
         return checkmate;
     }
@@ -165,24 +150,29 @@ public class ChessGame implements Cloneable{
     public boolean isInStalemate(TeamColor teamColor) {
         boolean stalemate = false;
         if (!isInCheck(teamColor)) {
-            stalemate = true;
-            for (var pos : getPiecePositions(teamColor)) {
-                for (var move : board.getPiece(pos).pieceMoves(board, pos)) {
-                    ChessGame clone = this.clone();
+            stalemate = noMoves(teamColor);
+        }
+        return stalemate;
+    }
+
+    private boolean noMoves(TeamColor teamColor) {
+        boolean noMoves = true;
+        for (var pos : getPiecePositions(teamColor)) {
+            for (var move : board.getPiece(pos).pieceMoves(board, pos)) {
+                ChessGame clone = this.clone();
 //                    clone.makeMove(move);
-                    clone.board.addPiece(move.getEndPosition(), clone.board.getPiece(move.getStartPosition()));
-                    clone.board.addPiece(move.getStartPosition(), null);
-                    if (!clone.isInCheck(teamColor)) {
-                        stalemate = false;
-                        break;
-                    }
-                }
-                if (!stalemate) {
+                clone.board.addPiece(move.getEndPosition(), clone.board.getPiece(move.getStartPosition()));
+                clone.board.addPiece(move.getStartPosition(), null);
+                if (!clone.isInCheck(teamColor)) {
+                    noMoves = false;
                     break;
                 }
             }
+            if (!noMoves) {
+                break;
+            }
         }
-        return stalemate;
+        return noMoves;
     }
 
     /**
