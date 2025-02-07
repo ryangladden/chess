@@ -11,24 +11,6 @@ public class ChessPosition {
     private final int row;
     private final int col;
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        for (int i = 100; i <= row + 100; i++) {
-            for (int j = 0; j <= col; j++) {
-                hash += i * j;
-            }
-        }
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        ChessPosition position = (ChessPosition) obj;
-        return (position.getRow() == this.getRow() && position.getColumn() == this.getColumn());
-//        return this.hashCode() == obj.hashCode();
-    }
-
     public ChessPosition(int row, int col) {
         this.row = row - 1;
         this.col = col - 1;
@@ -39,7 +21,23 @@ public class ChessPosition {
      * 1 codes for the bottom row
      */
     public int getRow() {
-        return row + 1;
+        return this.row + 1;
+    }
+
+    @Override
+    public int hashCode() {
+        return (row + 1) + (col + 1) * 10;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        ChessPosition other = (ChessPosition) obj;
+        return this.getRow() == other.getRow() && this.getColumn() == other.getColumn();
+    }
+
+    @Override
+    public String toString() {
+        return "{" + getRow() + "," + getColumn() +"}";
     }
 
     /**
@@ -47,11 +45,6 @@ public class ChessPosition {
      * 1 codes for the left row
      */
     public int getColumn() {
-        return col + 1;
-    }
-
-    @Override
-    public String toString() {
-        return "{" + (this.row + 1) +", " + (this.col + 1) + "}";
+        return this.col + 1;
     }
 }

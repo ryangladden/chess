@@ -8,10 +8,20 @@ public interface PieceMoveCalculator {
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
 
-    default boolean isValidMove(ChessBoard board, ChessPosition myPosition, int newRow, int newColumn) {
-        return ((newRow >= 1 && newRow <= 8 && newColumn >= 1 && newColumn <= 8)
-                && (board.getPiece(new ChessPosition(newRow, newColumn)) == null || board.getPiece(myPosition).getTeamColor() != board.getPiece(new ChessPosition(newRow, newColumn)).getTeamColor())
-                && !(myPosition.getRow() == newRow && myPosition.getColumn() == newColumn));
+    default boolean isValidMove(ChessBoard board, ChessPosition position, int row, int col) {
+//        if ((newRow < 1 || newRow > 8 || newColumn < 1 || newColumn > 8)) {
+//            return false;
+//        }
+//        return ((board.getPiece(new ChessPosition(newRow, newColumn)) != null
+//                && board.getPiece(myPosition).getTeamColor() != board.getPiece(new ChessPosition(newRow, newColumn)).getTeamColor())
+//                && !(myPosition.getRow() == newRow && myPosition.getColumn() == newColumn));
+//    }
+        if (row <= 8 && row >= 1 && col <= 8 && col >= 1) {
+            return (board.getPiece(new ChessPosition(row, col)) == null
+                    || board.getPiece(position).getTeamColor() != board.getPiece(new ChessPosition(row, col)).getTeamColor()
+            );
+        }
+        return false;
     }
 
     default boolean isCapture(ChessBoard board, ChessMove move) {

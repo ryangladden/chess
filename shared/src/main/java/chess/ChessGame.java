@@ -1,6 +1,5 @@
 package chess;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,20 +12,20 @@ import java.util.Collections;
  */
 public class ChessGame implements Cloneable{
 
+    private TeamColor teamTurn;
     private ChessBoard board;
-    private TeamColor turnColor;
 
     public ChessGame() {
+        this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
-        board.resetBoard();
-        this.turnColor = TeamColor.WHITE;
+        this.board.resetBoard();
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        return this.turnColor;
+        return this.teamTurn;
     }
 
     /**
@@ -35,23 +34,7 @@ public class ChessGame implements Cloneable{
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        turnColor = team;
-    }
-
-    @Override
-    public ChessGame clone() {
-        try {
-            ChessGame clone = (ChessGame) super.clone();
-            if (this.turnColor == TeamColor.BLACK) {
-                clone.turnColor = TeamColor.BLACK;
-            }
-            else { clone.turnColor = TeamColor.WHITE; }
-            clone.board = this.board.clone();
-            // TODO: copy mutable state here, so the clone can't change the internals of the original
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
+        this.teamTurn = team;
     }
 
     /**
@@ -71,20 +54,23 @@ public class ChessGame implements Cloneable{
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
-        if (piece == null) { return Collections.emptyList(); }
-        else if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-            ChessGame clone = this.clone();
-            ArrayList<ChessMove> valid = new ArrayList<>();
-            for (ChessMove move : piece.pieceMoves(clone.getBoard(), startPosition)) {
-                clone.board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), ChessPiece.PieceType.KING));
-                clone.board.addPiece(move.getStartPosition(), null);
-                if (clone.isInCheck(piece.getTeamColor())) {
-                    valid.add(move);
-                }
-            }
-            return valid;
+        Collection<ChessMove> validMoves = new ArrayList<>();
+        if (piece == null) {
+            validMoves.add(null);
+            return validMoves;
         }
-            return piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> moves = board.getPiece(startPosition).pieceMoves(board, startPosition);
+        for (ChessMove move : moves) {
+            var clone = this.clone();
+
+            clone.board.addPiece(move.getEndPosition(), clone.board.getPiece(move.getStartPosition()));
+            clone.board.addPiece(move.getStartPosition(), null);
+//                clone.makeMove(move);
+            if (!clone.isInCheck(piece.getTeamColor()) && !clone.isInCheckmate(piece.getTeamColor())) {
+                validMoves.add(move);
+            }
+        }
+        return validMoves;
     }
 
     /**
@@ -94,12 +80,26 @@ public class ChessGame implements Cloneable{
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        ChessPiece piece = board.getPiece(move.getStartPosition());
-        if (piece == null
-                || !validMoves(move.getStartPosition()).contains(move)) {
-            throw new InvalidMoveException("You can't make that move, silly");
+        var pos = move.getStartPosition();
+        var piece = board.getPiece(pos);
+        if (piece == null) {
+            throw new InvalidMoveException("No piece at position " + move.getStartPosition());
         }
-        changeTeams();
+        else if (board.getPiece(pos).getTeamColor() != this.teamTurn){
+            throw new InvalidMoveException("Not your turn, fool! Your team: " + piece.getTeamColor() + " but it's " + this.teamTurn + "'s turn");
+        }
+        else if (!validMoves(pos).contains(move)) {
+            throw new InvalidMoveException("Dawg this ain't gonna fly, you know that. Try a different move, son.");
+        }
+        else if (move.getPromotionPiece() != null){
+            board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+            board.addPiece(move.getStartPosition(), null);
+        }
+        else {
+            board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+            board.addPiece(move.getStartPosition(), null);
+            teamTurn = (this.teamTurn == TeamColor.BLACK) ? (TeamColor.WHITE) : (TeamColor.BLACK);
+        }
     }
 
     /**
@@ -109,16 +109,20 @@ public class ChessGame implements Cloneable{
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ChessPosition king = getKing(teamColor);
         Collection<ChessPosition> otherPositions = (teamColor == TeamColor.BLACK) ? getPiecePositions(TeamColor.WHITE) : getPiecePositions(TeamColor.BLACK);
-        for (var pos : otherPositions) {
-            for (var move : (board.getPiece(pos).pieceMoves(board, pos))) {
-                if (move.getEndPosition() == king) {
-                    return true;
+        ChessPosition kingPos = getKing(teamColor);
+        if (kingPos == null) {
+            return false;
+        }
+        boolean check = false;
+        for (ChessPosition pos : otherPositions) {
+            for (ChessMove move : board.getPiece(pos).pieceMoves(board, pos)) {
+                if (move.getEndPosition().hashCode() == kingPos.hashCode()) {
+                    check = true;
                 }
             }
         }
-        return false;
+        return check;
     }
 
     /**
@@ -128,8 +132,26 @@ public class ChessGame implements Cloneable{
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-//        return (isInCheck(teamColor) && board.getPiece(getKing(teamColor)).pieceMoves(board, getKing(teamColor)).isEmpty());
-        return true;
+        boolean checkmate = false;
+        if (isInCheck(teamColor)) {
+            checkmate = true;
+            for (var pos : getPiecePositions(teamColor)) {
+                for (var move : board.getPiece(pos).pieceMoves(board, pos)) {
+                    ChessGame clone = this.clone();
+//                    clone.makeMove(move);
+                    clone.board.addPiece(move.getEndPosition(), clone.board.getPiece(move.getStartPosition()));
+                    clone.board.addPiece(move.getStartPosition(), null);
+                    if (!clone.isInCheck(teamColor)) {
+                        checkmate = false;
+                        break;
+                    }
+                }
+                if (!checkmate) {
+                    break;
+                }
+            }
+        }
+        return checkmate;
     }
 
     /**
@@ -149,8 +171,7 @@ public class ChessGame implements Cloneable{
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-//        this.board = board;
-                board.resetBoard();
+        this.board = board;
     }
 
     /**
@@ -159,13 +180,13 @@ public class ChessGame implements Cloneable{
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        return board;
+        return this.board;
     }
 
-    private Collection<ChessPosition> getPiecePositions() {
+    public Collection<ChessPosition> getPiecePositions() {
         Collection<ChessPosition> pieces = new ArrayList<>();
-        for (int i = 0; i <= 7; i++) {
-            for (int j = 0; j <= 7; j++) {
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
                 if (board.getPiece(i, j) != null) {
                     pieces.add(new ChessPosition(i, j));
                 }
@@ -174,33 +195,42 @@ public class ChessGame implements Cloneable{
         return pieces;
     }
 
-    private Collection<ChessPosition> getPiecePositions(TeamColor teamColor) {
+    public Collection<ChessPosition> getPiecePositions(TeamColor teamColor) {
         Collection<ChessPosition> pieces = getPiecePositions();
+        Collection<ChessPosition> teamPieces = new ArrayList<>();
+//        pieces.removeIf(pos -> board.getPiece(pos).getTeamColor() != teamColor);
         for (ChessPosition pos : pieces) {
-            if (board.getPiece(pos).getTeamColor() != teamColor) {
-                pieces.remove(pos);
+            if (board.getPiece(pos).getTeamColor() == teamColor) {
+                teamPieces.add(pos);
             }
         }
-        return pieces;
+        return teamPieces;
     }
 
-
-    private ChessPosition getKing(TeamColor teamColor) {
+    public ChessPosition getKing(TeamColor teamColor) {
         Collection<ChessPosition> pieces = getPiecePositions();
         for (ChessPosition pos : pieces) {
             if (board.getPiece(pos).getPieceType() == ChessPiece.PieceType.KING
-                && board.getPiece(pos).getTeamColor() == teamColor) {
+                    && board.getPiece(pos).getTeamColor() == teamColor) {
                 return pos;
             }
         }
         return null;
     }
 
-    private void changeTeams() {
-        if (turnColor == TeamColor.BLACK) { turnColor = TeamColor.WHITE; }
-        else { turnColor = TeamColor.BLACK; }
-    }
-    private TeamColor getTurnColor() {
-        return this.turnColor;
+    @Override
+    public ChessGame clone() {
+        try {
+            ChessGame clone = (ChessGame) super.clone();
+            if (this.teamTurn == TeamColor.BLACK) {
+                clone.teamTurn = TeamColor.BLACK;
+            }
+            else { clone.teamTurn = TeamColor.WHITE; }
+            clone.board = this.board.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
