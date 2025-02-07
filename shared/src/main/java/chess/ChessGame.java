@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import static chess.ChessPiece.PieceType.KING;
+import static chess.ChessPiece.PieceType.ROOK;
+
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -14,11 +17,15 @@ public class ChessGame implements Cloneable{
 
     private TeamColor teamTurn;
     private ChessBoard board;
+    private boolean whiteCanCastle;
+    private boolean blackCanCastle;
 
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
         this.board.resetBoard();
+        this.whiteCanCastle = true;
+        this.blackCanCastle = true;
     }
 
     /**
@@ -101,6 +108,16 @@ public class ChessGame implements Cloneable{
             board.addPiece(move.getStartPosition(), null);
             teamTurn = (this.teamTurn == TeamColor.BLACK) ? (TeamColor.WHITE) : (TeamColor.BLACK);
         }
+        if (piece.getPieceType() == KING || piece.getPieceType() == ROOK) {
+            switch(piece.getTeamColor()) {
+                case TeamColor.WHITE:
+                    whiteCanCastle = false;
+                    break;
+                case TeamColor.BLACK:
+                    blackCanCastle = false;
+                    break;
+            }
+        }
     }
 
     /**
@@ -120,9 +137,11 @@ public class ChessGame implements Cloneable{
             for (ChessMove move : board.getPiece(pos).pieceMoves(board, pos)) {
                 if (move.getEndPosition().hashCode() == kingPos.hashCode()) {
                     check = true;
+
                 }
             }
         }
+
         return check;
     }
 
@@ -175,6 +194,36 @@ public class ChessGame implements Cloneable{
         return noMoves;
     }
 
+    public boolean canCastle(TeamColor teamColor) {
+        if (getCanCastle(teamColor)) {
+            getPiecePositions();
+        }
+        return true;
+    }
+
+    private void setCanCastle(TeamColor teamColor, boolean can) {
+        switch(teamColor) {
+            case WHITE:
+                whiteCanCastle = can;
+                break;
+            case BLACK:
+                blackCanCastle = can;
+                break;
+        }
+    }
+
+    private boolean getCanCastle(TeamColor teamColor) {
+        boolean canCastle = false;
+        switch(teamColor) {
+            case WHITE:
+                canCastle = whiteCanCastle;
+                break;
+            case BLACK:
+                canCastle = blackCanCastle;
+                break;
+        }
+        return canCastle;
+    }
     /**
      * Sets this game's chessboard with a given board
      *
@@ -218,14 +267,30 @@ public class ChessGame implements Cloneable{
     }
 
     public ChessPosition getKing(TeamColor teamColor) {
+//        Collection<ChessPosition> pieces = getPiecePositions();
+//        for (ChessPosition pos : pieces) {
+//            if (board.getPiece(pos).getPieceType() == KING
+//                    && board.getPiece(pos).getTeamColor() == teamColor) {
+//                return pos;
+//            }
+//        }
+//        return null;
+        return getPiece(teamColor, KING).getFirst();
+    }
+
+    public ArrayList<ChessPosition> getPiece(TeamColor teamColor, ChessPiece.PieceType type) {
         Collection<ChessPosition> pieces = getPiecePositions();
+        ArrayList<ChessPosition> piecesFound = new ArrayList<>();
         for (ChessPosition pos : pieces) {
-            if (board.getPiece(pos).getPieceType() == ChessPiece.PieceType.KING
+            if (board.getPiece(pos).getPieceType() == type
                     && board.getPiece(pos).getTeamColor() == teamColor) {
-                return pos;
+                piecesFound.add(pos);
             }
         }
-        return null;
+        if (piecesFound.isEmpty()) {
+            piecesFound.add(null);
+        }
+        return piecesFound;
     }
 
     @Override
