@@ -1,14 +1,16 @@
 package server;
 
+import dataaccess.MemoryDataAccess;
 import server.handlers.RegisterHandler;
-import service.RegisterService;
+import service.UserService;
 import spark.*;
 import spark.Request;
 import spark.Response;
 
 public class Server{
 
-    RegisterService userService = new RegisterService();
+    MemoryDataAccess memoryData = new MemoryDataAccess();
+    UserService registerService = new UserService(memoryData);
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -38,9 +40,8 @@ public class Server{
     }
 
     public Object registerUser(Request req, Response res) {
-        System.out.println("Incoming POST /user");
-        var obj = new RegisterHandler(req);
-        return null;
+        var handler = new RegisterHandler(this.registerService);
+        return handler.register(req, res);
     }
 
 }

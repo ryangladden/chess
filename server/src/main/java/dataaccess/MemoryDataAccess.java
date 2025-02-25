@@ -9,13 +9,23 @@ public class MemoryDataAccess implements DataAccess {
     private HashMap<String, UserData> users = new HashMap<>();
 
     @Override
-    public void createAuth(AuthData authData) {
-        authTokens.put(authData.authToken(), users.get(authData.username()));
+    public void createUser(UserData user) throws DataAccessException{
+        if (users.getOrDefault(user.username(), null) != null) {
+            throw new DataAccessException("Error: username taken");
+        }
+        users.put(user.username(), user);
+        System.out.println(this.users);
     }
 
     @Override
-    public void createUser(UserData user) {
-        users.put(user.username(), user);
+    public UserData getUser(String username) {
+        return users.getOrDefault(username, null);
+    }
+
+    @Override
+    public void createAuth(AuthData authData) {
+        authTokens.put(authData.authToken(), users.get(authData.username()));
+        System.out.println(this.authTokens);
     }
 
     @Override

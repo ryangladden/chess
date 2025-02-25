@@ -1,4 +1,4 @@
 package server.response;
 
-public record RegisterResponse(String username, String authToken) {
+public record RegisterResponse(int status, String body) {
 }
