@@ -1,11 +1,14 @@
 package server;
 
-import com.google.gson.Gson;
+import server.handlers.RegisterHandler;
+import service.RegisterService;
 import spark.*;
 import spark.Request;
 import spark.Response;
 
 public class Server{
+
+    RegisterService userService = new RegisterService();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -23,6 +26,8 @@ public class Server{
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
+
+
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -37,4 +42,5 @@ public class Server{
         var obj = new RegisterHandler(req);
         return null;
     }
+
 }
