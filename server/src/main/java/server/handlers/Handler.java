@@ -24,4 +24,8 @@ public interface Handler {
             throw new InvalidRequest("Error: bad request");
         }
     }
+
+    default String getAuthToken(Request req) {
+         return req.headers("Authorization");
+    }
 }

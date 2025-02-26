@@ -9,22 +9,26 @@ import java.util.UUID;
 
 public class UserService extends Service {
 
-    MemoryDataAccess memoryData;
-
     public UserService(MemoryDataAccess memoryData) {
-        this.memoryData = memoryData;
+        super(memoryData);
     }
 
     public LoginResponse login(String username, String password) throws UnauthorizedException {
-        UserData user = this.memoryData.getUser(username);
-        if (user == null || password != user.password()) {
+        UserData user = memoryData.getUser(username);
+        System.out.println(user);
+        if (user == null || !password.equals(user.password())) {
             throw new UnauthorizedException("Error: unauthorized");
         }
        else {
-            System.out.println("success baby");
             AuthData authData = createAuth(user);
             return new LoginResponse(200, authData);
         }
+    }
+
+    public LogoutResponse logout(String authToken) throws UnauthorizedException {
+        authenticate(authToken);
+        memoryData.removeAuthToken(authToken);
+        return new LogoutResponse(200);
     }
 
     public LoginResponse register(String username, String password, String email) throws DataAccessException {
@@ -37,11 +41,5 @@ public class UserService extends Service {
         AuthData authData = new AuthData(UUID.randomUUID().toString(), userData.username());
         memoryData.createAuth(authData);
         return authData;
-    }
-
-    private String serializeAuthResponse(AuthData authData) {
-        Gson serializer = new Gson();
-        String json = serializer.toJson(authData);
-        return json;
     }
 }

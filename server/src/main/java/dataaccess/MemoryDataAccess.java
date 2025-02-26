@@ -14,7 +14,6 @@ public class MemoryDataAccess implements DataAccess {
             throw new DataAccessException("Error: username taken");
         }
         users.put(user.username(), user);
-        System.out.println(this.users);
     }
 
     @Override
@@ -23,13 +22,17 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public void createAuth(AuthData authData) {
-        authTokens.put(authData.authToken(), users.get(authData.username()));
-        System.out.println(this.authTokens);
+    public UserData authenticate(String authToken) {
+        return authTokens.getOrDefault(authToken, null);
     }
 
     @Override
-    public void verifyAuth(String authToken) {
+    public void createAuth(AuthData authData) {
+        authTokens.put(authData.authToken(), users.get(authData.username()));
+    }
 
+    @Override
+    public void removeAuthToken(String authToken) {
+        authTokens.remove(authToken);
     }
 }

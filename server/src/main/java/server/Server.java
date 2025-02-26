@@ -2,6 +2,7 @@ package server;
 
 import dataaccess.MemoryDataAccess;
 import server.handlers.LoginHandler;
+import server.handlers.LogoutHandler;
 import server.handlers.RegisterHandler;
 import service.UserService;
 import spark.*;
@@ -21,7 +22,7 @@ public class Server{
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::registerUser);
         Spark.post("/session",  this::login);
-        Spark.delete("/session", (req, res) -> "DELETE /session");
+        Spark.delete("/session", this::logout);
         Spark.get("/game", (req, res) -> "GET /game");
         Spark.post("/game", (req, res) -> "POST /game");
         Spark.put("/game", (req, res) -> "PUT /game");
@@ -40,14 +41,19 @@ public class Server{
         Spark.awaitStop();
     }
 
-    public Object registerUser(Request req, Response res) {
+    public String registerUser(Request req, Response res) {
         var handler = new RegisterHandler(this.userService);
         return handler.register(req, res);
     }
 
-    public Object login(Request req, Response res) {
+    public String login(Request req, Response res) {
         var handler = new LoginHandler(this.userService);
         return handler.login(req, res);
+    }
+
+    public String logout(Request req, Response res) {
+        var handler = new LogoutHandler(this.userService);
+        return handler.logout(req, res);
     }
 
 }

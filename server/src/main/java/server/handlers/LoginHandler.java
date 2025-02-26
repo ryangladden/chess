@@ -18,7 +18,7 @@ public class LoginHandler implements Handler{
         this.service = service;
     }
 
-    public Object login(Request req, Response res) {
+    public String login(Request req, Response res) {
         try {
             LoginRequest reqParsed = parseRequest(req, LoginRequest.class);
             LoginResponse logRes = service.login(reqParsed.username(), reqParsed.password());

@@ -1,4 +1,4 @@
 package server.request;
 
-public record CreateGameRequest() {
+public record CreateGameRequest(String name) {
 }

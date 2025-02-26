@@ -1,3 +1,3 @@
 package server.request;
 
-public record LogoutRequest(String authToken) {}
+public record LogoutRequest(String authentication) {}
