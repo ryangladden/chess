@@ -1,10 +1,7 @@
 package service;
 
 
-import dataaccess.AuthData;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryDataAccess;
-import dataaccess.UserData;
+import dataaccess.*;
 import server.response.*;
 import com.google.gson.Gson;
 
@@ -18,38 +15,22 @@ public class UserService extends Service {
         this.memoryData = memoryData;
     }
 
-    public LoginResponse login(String username, String password) {
+    public LoginResponse login(String username, String password) throws UnauthorizedException {
         UserData user = this.memoryData.getUser(username);
         if (user == null || password != user.password()) {
-            return new LoginResponse(401, "{ \"message\": \"Error: unauthorized\" }");
+            throw new UnauthorizedException("Error: unauthorized");
         }
        else {
+            System.out.println("success baby");
             AuthData authData = createAuth(user);
-            return new LoginResponse(200, serializeAuthResponse(authData));
+            return new LoginResponse(200, authData);
         }
     }
 
-    public RegisterResponse register(String username, String password, String email) {
-        try {
-            var user = new UserData(username, password, email);
-            memoryData.createUser(user);
-            var auth = createAuth(user);
-            return registerSuccess(auth);
-        }
-        catch(DataAccessException e) {
-            return registerFailure(e.getMessage());
-        }
-    }
-
-    private RegisterResponse registerSuccess(AuthData authData) {
-        var auth = serializeAuthResponse(authData);
-        var res = new RegisterResponse(200, auth);
-        System.out.println(res);
-        return res;
-    }
-
-    private RegisterResponse registerFailure(String message) {
-        return new RegisterResponse(403, "{\"message\": \""+ message + "\"}");
+    public LoginResponse register(String username, String password, String email) throws DataAccessException {
+        var user = new UserData(username, password, email);
+        memoryData.createUser(user);
+        return login(username, password);
     }
 
     private AuthData createAuth(UserData userData) {

@@ -2,14 +2,16 @@ package server.handlers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import server.InvalidRequest;
-import server.request.RegisterRequest;
-import server.response.RegisterResponse;
+import dataaccess.DataAccessException;
+import server.request.*;
+import server.response.*;
+import server.*;
+import service.*;
 import service.UserService;
 import spark.Request;
 import spark.Response;
 
-public class RegisterHandler {
+public class RegisterHandler implements Handler{
 
     private UserService service;
 
@@ -17,27 +19,23 @@ public class RegisterHandler {
         this.service = service;
     }
 
-    private RegisterRequest parseRequest(Request req) throws InvalidRequest{
+    public String register(Request req, Response res) {
         try {
-            Gson serializer = new Gson();
-            return serializer.fromJson(req.body(), RegisterRequest.class);
-        }
-        catch (JsonSyntaxException e) {
-            throw new InvalidRequest("{\"message\": \"Error: bad request\"}");
-        }
-    }
-
-    public Object register(Request req, Response res) {
-        RegisterResponse regRes;
-        try {
-            var reqParsed = parseRequest(req);
-            regRes = service.register(reqParsed.username(), reqParsed.password(), reqParsed.email());
+            var reqParsed = parseRequest(req, RegisterRequest.class);
+            LoginResponse regRes = service.register(reqParsed.username(), reqParsed.password(), reqParsed.email());
             res.status(regRes.status());
-            return regRes.body();
+            return toJson(regRes);
         } catch (InvalidRequest e) {
             res.status(400);
-            return e.getMessage();
+            return errorToJson(e.getMessage());
+        } catch (DataAccessException e) {
+            res.status(403);
+            return errorToJson(e.getMessage());
         }
     }
 
+    private String toJson(LoginResponse regRes) {
+        Gson serializer = new Gson();
+        return serializer.toJson(regRes.authData());
+    }
 }
