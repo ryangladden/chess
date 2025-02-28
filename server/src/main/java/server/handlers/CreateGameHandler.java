@@ -1,9 +1,6 @@
 package server.handlers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import dataaccess.UnauthorizedException;
-import server.InvalidRequest;
 import server.request.CreateGameRequest;
 import server.response.CreateGameResponse;
 import service.GameService;
@@ -20,8 +17,7 @@ public class CreateGameHandler implements Handler{
 
     public String createNewGame(Request req, Response res) {
         try {
-            CreateGameRequest gameName = (parseRequest(req, CreateGameRequest.class));
-            CreateGameRequest gameRequest = new CreateGameRequest(getAuthToken(req), gameName.gameName());
+            CreateGameRequest gameRequest = (CreateGameRequest) parseRequest(req, CreateGameRequest.class);
             CreateGameResponse gameResponse = service.createNewGame(gameRequest);
             res.status(gameResponse.status());
             return gameIdToJson(gameResponse);
@@ -31,12 +27,8 @@ public class CreateGameHandler implements Handler{
         }
     }
 
-    private String getGameName(Request req) {
-        return "";
-    }
 
     private String gameIdToJson(CreateGameResponse res) {
         return "{\"gameID\": " + res.gameID() + "}";
     }
-
 }

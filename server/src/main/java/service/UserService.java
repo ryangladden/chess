@@ -3,6 +3,7 @@ package service;
 
 import dataaccess.*;
 import server.request.LoginRequest;
+import server.request.LogoutRequest;
 import server.request.RegisterRequest;
 import server.response.*;
 import com.google.gson.Gson;
@@ -27,8 +28,9 @@ public class UserService extends Service {
         }
     }
 
-    public LogoutResponse logout(String authToken) throws UnauthorizedException {
-        authenticate(authToken);
+    public LogoutResponse logout(LogoutRequest req) throws UnauthorizedException {
+        String authToken = req.authToken();
+        authenticate(req.authToken());
         memoryData.removeAuthToken(authToken);
         return new LogoutResponse(200);
     }

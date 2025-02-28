@@ -1,10 +1,7 @@
 package server;
 
 import dataaccess.MemoryDataAccess;
-import server.handlers.CreateGameHandler;
-import server.handlers.LoginHandler;
-import server.handlers.LogoutHandler;
-import server.handlers.RegisterHandler;
+import server.handlers.*;
 import service.GameService;
 import service.UserService;
 import spark.*;
@@ -26,7 +23,7 @@ public class Server{
         Spark.post("/user", this::registerUser);
         Spark.post("/session",  this::login);
         Spark.delete("/session", this::logout);
-        Spark.get("/game", (req, res) -> "GET /game");
+        Spark.get("/game", this::listGames);
         Spark.post("/game", this::createGame);
         Spark.put("/game", (req, res) -> "PUT /game");
         Spark.delete("/db", (req,res) -> "{}");
@@ -62,5 +59,10 @@ public class Server{
     public String createGame(Request req, Response res) {
         var handler = new CreateGameHandler(gameService);
         return handler.createNewGame(req, res);
+    }
+
+    public String listGames(Request req, Response res) {
+        var handler = new ListGamesHandler(gameService);
+        return handler.listGames(req, res);
     }
 }

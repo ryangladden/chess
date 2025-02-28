@@ -2,6 +2,9 @@ package dataaccess;
 
 import chess.ChessGame;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 import static java.lang.String.valueOf;
@@ -44,8 +47,21 @@ public class MemoryDataAccess extends DataAccess {
     public int createNewGame(String gameName) {
         int gameID = getNextID();
         String strGameID = String.valueOf(gameID);
-        GameData game = new GameData(strGameID, "", "", gameName, new ChessGame());
+        GameData game = new GameData(gameID, "", "", gameName, new ChessGame());
         games.put(strGameID, game);
         return gameID;
+    }
+
+    public Collection<GameData> listGames() {
+        System.out.println("Listing games");
+        ArrayList<GameData> gameList = new ArrayList<GameData>();
+        for ( String key : games.keySet() ) {
+            gameList.add(removeBoard(games.get(key)));
+        }
+        return gameList;
+    }
+
+    private GameData removeBoard(GameData game) {
+        return new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), null);
     }
 }

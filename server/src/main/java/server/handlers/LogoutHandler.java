@@ -2,6 +2,7 @@ package server.handlers;
 
 import dataaccess.UnauthorizedException;
 import server.request.LogoutRequest;
+import server.request.RecordRequest;
 import server.response.LogoutResponse;
 import service.UserService;
 import spark.Request;
@@ -17,8 +18,9 @@ public class LogoutHandler implements Handler{
 
     public String logout(Request req, Response res) {
         try {
-            LogoutRequest reqParsed = new LogoutRequest(getAuthToken(req));
-            LogoutResponse logoutRes = service.logout(reqParsed.authentication());
+            System.out.println(req.body());
+            LogoutRequest logoutReq = (LogoutRequest) parseRequestWithAuth(req, LogoutRequest.class);
+            LogoutResponse logoutRes = service.logout(logoutReq);
             res.status(logoutRes.status());
             return "";
         } catch (UnauthorizedException e) {

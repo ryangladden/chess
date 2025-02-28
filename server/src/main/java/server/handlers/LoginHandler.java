@@ -20,7 +20,7 @@ public class LoginHandler implements Handler{
 
     public String login(Request req, Response res) {
         try {
-            LoginRequest reqParsed = parseRequest(req, LoginRequest.class);
+            LoginRequest reqParsed = (LoginRequest) parseRequest(req, LoginRequest.class);
             LoginResponse logRes = service.login(reqParsed);
             res.status(logRes.status());
             return toJson(logRes);
