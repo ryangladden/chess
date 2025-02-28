@@ -32,6 +32,9 @@ public class LoginHandler implements Handler{
         catch(UnauthorizedException e) {
             res.status(401);
             return errorToJson(e.getMessage());
+        } catch(Exception e) {
+            res.status(500);
+            return errorToJson(e.getMessage());
         }
     }
 

@@ -18,13 +18,15 @@ public class LogoutHandler implements Handler{
 
     public String logout(Request req, Response res) {
         try {
-            System.out.println(req.body());
             LogoutRequest logoutReq = (LogoutRequest) parseRequest(req, LogoutRequest.class);
             LogoutResponse logoutRes = service.logout(logoutReq);
             res.status(logoutRes.status());
             return "";
         } catch (UnauthorizedException e) {
             res.status(401);
+            return errorToJson(e.getMessage());
+        } catch(Exception e) {
+            res.status(500);
             return errorToJson(e.getMessage());
         }
     }

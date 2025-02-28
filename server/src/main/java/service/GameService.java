@@ -21,7 +21,6 @@ public class GameService extends Service {
     public CreateGameResponse createNewGame(CreateGameRequest req) throws UnauthorizedException {
         authenticate(req.authToken());
         if (req.gameName() == null) {
-            System.out.println("Bro it failed");
             throw new InvalidRequest("Error: bad request");
         }
         int gameID = memoryData.createNewGame(req.gameName());
@@ -38,5 +37,9 @@ public class GameService extends Service {
         UserData user = authenticate(req.authToken());
         memoryData.joinGame(user, req.gameID(), req.playerColor());
         return new JoinGameResponse(200);
+    }
+
+    public void clear() {
+        memoryData.clear();
     }
 }

@@ -55,7 +55,6 @@ public class MemoryDataAccess extends DataAccess {
 
     @Override
     public Collection<GameData> listGames() {
-        System.out.println("Listing games");
         ArrayList<GameData> gameList = new ArrayList<GameData>();
         for ( String key : games.keySet() ) {
             gameList.add(removeBoard(games.get(key)));
@@ -89,15 +88,14 @@ public class MemoryDataAccess extends DataAccess {
         }
     }
 
-    private GameData removeBoard(GameData game) {
-        return new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), null);
+    @Override
+    public void clear() {
+        this.authTokens = new HashMap<>();
+        this.users = new HashMap<>();
+        this.games = new HashMap<>();
     }
 
-    private boolean colorNotTaken(GameData game, String color) throws InvalidRequest {
-        return switch (color) {
-            case "WHITE" -> game.whiteUsername().isEmpty();
-            case "BLACK" -> game.blackUsername().isEmpty();
-            default -> throw new IllegalStateException("Unexpected value: " + color);
-        };
+    private GameData removeBoard(GameData game) {
+        return new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), null);
     }
 }

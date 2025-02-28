@@ -28,6 +28,9 @@ public class CreateGameHandler implements Handler{
         } catch (InvalidRequest e) {
             res.status(400);
             return errorToJson(e.getMessage());
+        } catch(Exception e) {
+            res.status(500);
+            return errorToJson(e.getMessage());
         }
     }
 

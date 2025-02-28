@@ -31,6 +31,9 @@ public class RegisterHandler implements Handler{
         } catch (DataAccessException e) {
             res.status(403);
             return errorToJson(e.getMessage());
+        } catch(Exception e) {
+            res.status(500);
+            return errorToJson(e.getMessage());
         }
     }
 

@@ -18,7 +18,6 @@ public class UserService extends Service {
 
     public LoginResponse login(LoginRequest req) throws UnauthorizedException {
         UserData user = memoryData.getUser(req.username());
-        System.out.println(user);
         if (user == null || !req.password().equals(user.password())) {
             throw new UnauthorizedException("Error: unauthorized");
         }

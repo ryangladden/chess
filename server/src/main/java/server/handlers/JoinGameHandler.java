@@ -21,12 +21,16 @@ public class JoinGameHandler implements Handler{
             service.joinGame(joinReq);
             return "";
         } catch (UnauthorizedException e) {
-            res.status(400);
+            res.status(401);
             return errorToJson(e.getMessage());
         } catch(InvalidRequest e) {
+            res.status(400);
             return errorToJson(e.getMessage());
         } catch(ColorTakenException e) {
             res.status(403);
+            return errorToJson(e.getMessage());
+        } catch(Exception e) {
+            res.status(500);
             return errorToJson(e.getMessage());
         }
     }
