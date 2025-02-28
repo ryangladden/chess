@@ -1,4 +1,4 @@
 package server.request;
 
-public record CreateGameRequest(String name) {
+public record CreateGameRequest(String authToken, String gameName) {
 }

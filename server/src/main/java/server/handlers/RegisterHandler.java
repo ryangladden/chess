@@ -22,7 +22,7 @@ public class RegisterHandler implements Handler{
     public String register(Request req, Response res) {
         try {
             var reqParsed = parseRequest(req, RegisterRequest.class);
-            LoginResponse regRes = service.register(reqParsed.username(), reqParsed.password(), reqParsed.email());
+            LoginResponse regRes = service.register(reqParsed);
             res.status(regRes.status());
             return toJson(regRes);
         } catch (InvalidRequest e) {

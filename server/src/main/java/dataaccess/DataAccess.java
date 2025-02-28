@@ -1,10 +1,16 @@
 package dataaccess;
 
-public interface DataAccess {
+abstract class DataAccess {
 
-    public void createUser(UserData user) throws DataAccessException;
-    public void createAuth(AuthData authData);
-    public UserData authenticate(String authToken);
-    public UserData getUser(String username);
-    public void removeAuthToken(String authToken);
+    int idCount = 1;
+
+    abstract void createUser(UserData user) throws DataAccessException;
+    abstract void createAuth(AuthData authData);
+    abstract UserData authenticate(String authToken);
+    abstract UserData getUser(String username);
+    abstract void removeAuthToken(String authToken);
+    abstract int createNewGame(String gamename);
+    protected int getNextID() {
+        return idCount++;
+    }
 }

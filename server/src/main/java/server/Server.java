@@ -1,9 +1,11 @@
 package server;
 
 import dataaccess.MemoryDataAccess;
+import server.handlers.CreateGameHandler;
 import server.handlers.LoginHandler;
 import server.handlers.LogoutHandler;
 import server.handlers.RegisterHandler;
+import service.GameService;
 import service.UserService;
 import spark.*;
 import spark.Request;
@@ -13,6 +15,7 @@ public class Server{
 
     MemoryDataAccess memoryData = new MemoryDataAccess();
     UserService userService = new UserService(memoryData);
+    GameService gameService = new GameService(memoryData);
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -24,7 +27,7 @@ public class Server{
         Spark.post("/session",  this::login);
         Spark.delete("/session", this::logout);
         Spark.get("/game", (req, res) -> "GET /game");
-        Spark.post("/game", (req, res) -> "POST /game");
+        Spark.post("/game", this::createGame);
         Spark.put("/game", (req, res) -> "PUT /game");
         Spark.delete("/db", (req,res) -> "{}");
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -56,4 +59,8 @@ public class Server{
         return handler.logout(req, res);
     }
 
+    public String createGame(Request req, Response res) {
+        var handler = new CreateGameHandler(gameService);
+        return handler.createNewGame(req, res);
+    }
 }

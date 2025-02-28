@@ -2,6 +2,8 @@ package service;
 
 
 import dataaccess.*;
+import server.request.LoginRequest;
+import server.request.RegisterRequest;
 import server.response.*;
 import com.google.gson.Gson;
 
@@ -13,10 +15,10 @@ public class UserService extends Service {
         super(memoryData);
     }
 
-    public LoginResponse login(String username, String password) throws UnauthorizedException {
-        UserData user = memoryData.getUser(username);
+    public LoginResponse login(LoginRequest req) throws UnauthorizedException {
+        UserData user = memoryData.getUser(req.username());
         System.out.println(user);
-        if (user == null || !password.equals(user.password())) {
+        if (user == null || !req.password().equals(user.password())) {
             throw new UnauthorizedException("Error: unauthorized");
         }
        else {
@@ -31,10 +33,11 @@ public class UserService extends Service {
         return new LogoutResponse(200);
     }
 
-    public LoginResponse register(String username, String password, String email) throws DataAccessException {
-        var user = new UserData(username, password, email);
+    public LoginResponse register(RegisterRequest req) throws DataAccessException {
+        var user = new UserData(req.username(), req.password(), req.email());
         memoryData.createUser(user);
-        return login(username, password);
+
+        return login(new LoginRequest(req.username(), req.password()));
     }
 
     private AuthData createAuth(UserData userData) {

@@ -3,6 +3,8 @@ package server.handlers;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import server.InvalidRequest;
+import server.request.LoginRequest;
+import server.request.RegisterRequest;
 import service.Service;
 import spark.Request;
 
@@ -28,4 +30,5 @@ public interface Handler {
     default String getAuthToken(Request req) {
          return req.headers("Authorization");
     }
+
 }

@@ -1,8 +1,12 @@
 package dataaccess;
 
+import chess.ChessGame;
+
 import java.util.HashMap;
 
-public class MemoryDataAccess implements DataAccess {
+import static java.lang.String.valueOf;
+
+public class MemoryDataAccess extends DataAccess {
 
     private HashMap<String, UserData> authTokens = new HashMap<>();
     private HashMap<String, GameData> games = new HashMap<>();
@@ -34,5 +38,14 @@ public class MemoryDataAccess implements DataAccess {
     @Override
     public void removeAuthToken(String authToken) {
         authTokens.remove(authToken);
+    }
+
+    @Override
+    public int createNewGame(String gameName) {
+        int gameID = getNextID();
+        String strGameID = String.valueOf(gameID);
+        GameData game = new GameData(strGameID, "", "", gameName, new ChessGame());
+        games.put(strGameID, game);
+        return gameID;
     }
 }
