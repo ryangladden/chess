@@ -23,7 +23,8 @@ public class ListGamesHandler implements Handler{
             res.status(200);
             return new Gson().toJson(listResponse);
         } catch (UnauthorizedException e) {
-            return "";
+            res.status(401);
+            return errorToJson(e.getMessage());
         }
     }
 }

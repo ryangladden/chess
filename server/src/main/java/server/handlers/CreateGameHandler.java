@@ -1,6 +1,7 @@
 package server.handlers;
 
 import dataaccess.UnauthorizedException;
+import server.InvalidRequest;
 import server.request.CreateGameRequest;
 import server.response.CreateGameResponse;
 import service.GameService;
@@ -23,6 +24,9 @@ public class CreateGameHandler implements Handler{
             return gameIdToJson(gameResponse);
         } catch (UnauthorizedException e) {
             res.status(401);
+            return errorToJson(e.getMessage());
+        } catch (InvalidRequest e) {
+            res.status(400);
             return errorToJson(e.getMessage());
         }
     }

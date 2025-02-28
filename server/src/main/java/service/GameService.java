@@ -3,6 +3,7 @@ package service;
 import dataaccess.GameData;
 import dataaccess.MemoryDataAccess;
 import dataaccess.UnauthorizedException;
+import server.InvalidRequest;
 import server.request.CreateGameRequest;
 import server.request.ListGameRequest;
 import server.response.CreateGameResponse;
@@ -19,6 +20,10 @@ public class GameService extends Service {
 
     public CreateGameResponse createNewGame(CreateGameRequest req) throws UnauthorizedException {
         authenticate(req.authToken());
+        if (req.gameName() == null) {
+            System.out.println("Bro it failed");
+            throw new InvalidRequest("Error: bad request");
+        }
         int gameID = memoryData.createNewGame(req.gameName());
         return new CreateGameResponse(200, gameID);
     }
