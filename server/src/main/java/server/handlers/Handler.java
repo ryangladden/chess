@@ -30,17 +30,11 @@ public interface Handler {
             }
             return serializer.fromJson(req.body(), recordType);
         } catch (JsonSyntaxException e) {
-            System.out.println("oopsy");
             throw new InvalidRequest("Error: bad request");
         }
     }
 
     default String getAuthToken(Request req) {
         return req.headers("Authorization");
-    }
-
-    default <T extends RecordRequest> RecordRequest parseRequestWithAuth(Request req, Class<T> recordType) {
-        RecordRequest request = parseRequest(req, recordType);
-        return request.addAuth(getAuthToken(req));
     }
 }

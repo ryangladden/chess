@@ -14,10 +14,11 @@ public abstract class Service {
         this.memoryData = memoryData;
     }
 
-    protected void authenticate(String authToken) throws UnauthorizedException {
+    protected UserData authenticate(String authToken) throws UnauthorizedException {
         UserData user = memoryData.authenticate(authToken);
         if (user == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
+        return user;
     }
 }

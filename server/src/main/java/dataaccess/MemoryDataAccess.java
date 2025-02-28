@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import server.InvalidRequest;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,12 +47,13 @@ public class MemoryDataAccess extends DataAccess {
     @Override
     public int createNewGame(String gameName) {
         int gameID = getNextID();
-        String strGameID = String.valueOf(gameID);
+        String strGameID = valueOf(gameID);
         GameData game = new GameData(gameID, "", "", gameName, new ChessGame());
         games.put(strGameID, game);
         return gameID;
     }
 
+    @Override
     public Collection<GameData> listGames() {
         System.out.println("Listing games");
         ArrayList<GameData> gameList = new ArrayList<GameData>();
@@ -61,7 +63,41 @@ public class MemoryDataAccess extends DataAccess {
         return gameList;
     }
 
+    @Override
+    public void joinGame(UserData user, int gameID, String playerColor) throws InvalidRequest, ColorTakenException {
+        String gameIdStr = valueOf(gameID);
+        GameData game = games.get(gameIdStr);
+        switch(playerColor) {
+            case "WHITE":
+                if (game.whiteUsername().isEmpty()) {
+                    games.replace(gameIdStr, new GameData(gameID, user.username(), game.blackUsername(), game.gameName(), game.game()));
+                    break;
+                }
+                else {
+                    throw new ColorTakenException("Error: already taken");
+                }
+            case "BLACK":
+                if (game.blackUsername().isEmpty()) {
+                    games.replace(gameIdStr, new GameData(gameID, game.whiteUsername(), user.username(), game.gameName(), game.game()));
+                    break;
+                }
+                else {
+                    throw new ColorTakenException("Error: already taken");
+                }
+            case null, default:
+                throw new InvalidRequest("Error: bad request");
+        }
+    }
+
     private GameData removeBoard(GameData game) {
         return new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), null);
+    }
+
+    private boolean colorNotTaken(GameData game, String color) throws InvalidRequest {
+        return switch (color) {
+            case "WHITE" -> game.whiteUsername().isEmpty();
+            case "BLACK" -> game.blackUsername().isEmpty();
+            default -> throw new IllegalStateException("Unexpected value: " + color);
+        };
     }
 }

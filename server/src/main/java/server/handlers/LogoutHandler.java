@@ -19,7 +19,7 @@ public class LogoutHandler implements Handler{
     public String logout(Request req, Response res) {
         try {
             System.out.println(req.body());
-            LogoutRequest logoutReq = (LogoutRequest) parseRequestWithAuth(req, LogoutRequest.class);
+            LogoutRequest logoutReq = (LogoutRequest) parseRequest(req, LogoutRequest.class);
             LogoutResponse logoutRes = service.logout(logoutReq);
             res.status(logoutRes.status());
             return "";

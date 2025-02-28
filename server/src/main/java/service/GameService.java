@@ -1,12 +1,12 @@
 package service;
 
-import dataaccess.GameData;
-import dataaccess.MemoryDataAccess;
-import dataaccess.UnauthorizedException;
+import dataaccess.*;
 import server.InvalidRequest;
 import server.request.CreateGameRequest;
+import server.request.JoinGameRequest;
 import server.request.ListGameRequest;
 import server.response.CreateGameResponse;
+import server.response.JoinGameResponse;
 import server.response.ListGameResponse;
 
 import java.util.ArrayList;
@@ -32,5 +32,11 @@ public class GameService extends Service {
         authenticate(req.authToken());
         Collection<GameData> games = memoryData.listGames();
         return new ListGameResponse(games);
+    }
+
+    public JoinGameResponse joinGame(JoinGameRequest req) throws UnauthorizedException, InvalidRequest, ColorTakenException {
+        UserData user = authenticate(req.authToken());
+        memoryData.joinGame(user, req.gameID(), req.playerColor());
+        return new JoinGameResponse(200);
     }
 }

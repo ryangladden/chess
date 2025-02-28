@@ -25,7 +25,7 @@ public class Server{
         Spark.delete("/session", this::logout);
         Spark.get("/game", this::listGames);
         Spark.post("/game", this::createGame);
-        Spark.put("/game", (req, res) -> "PUT /game");
+        Spark.put("/game", this::joinGame);
         Spark.delete("/db", (req,res) -> "{}");
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
@@ -64,5 +64,10 @@ public class Server{
     public String listGames(Request req, Response res) {
         var handler = new ListGamesHandler(gameService);
         return handler.listGames(req, res);
+    }
+
+    public String joinGame(Request req, Response res) {
+        var handler = new JoinGameHandler(gameService);
+        return handler.joinGame(req, res);
     }
 }
