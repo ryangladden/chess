@@ -1,7 +1,6 @@
 package server.handlers;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import dataaccess.UnauthorizedException;
 import server.InvalidRequest;
 import server.request.LoginRequest;
@@ -10,7 +9,7 @@ import service.UserService;
 import spark.Request;
 import spark.Response;
 
-public class LoginHandler implements Handler{
+public class LoginHandler implements Handler {
 
     private UserService service;
 
@@ -24,17 +23,15 @@ public class LoginHandler implements Handler{
             LoginResponse logRes = service.login(reqParsed);
             res.status(logRes.status());
             return toJson(logRes);
-        }
-        catch(InvalidRequest e) {
+        } catch (InvalidRequest e) {
             res.status(400);
             return errorToJson(e.getMessage());
-        }
-        catch(UnauthorizedException e) {
+        } catch (UnauthorizedException e) {
             res.status(401);
             return errorToJson(e.getMessage());
-        } catch(Exception e) {
-            res.status(500);
-            return errorToJson(e.getMessage());
+        } catch (Exception e) {
+            res.status(400);
+            return errorToJson("Error: bad request");
         }
     }
 

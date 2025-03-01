@@ -2,13 +2,12 @@ package server.handlers;
 
 import dataaccess.UnauthorizedException;
 import server.request.LogoutRequest;
-import server.request.RecordRequest;
 import server.response.LogoutResponse;
 import service.UserService;
 import spark.Request;
 import spark.Response;
 
-public class LogoutHandler implements Handler{
+public class LogoutHandler implements Handler {
 
     UserService service;
 
@@ -25,9 +24,9 @@ public class LogoutHandler implements Handler{
         } catch (UnauthorizedException e) {
             res.status(401);
             return errorToJson(e.getMessage());
-        } catch(Exception e) {
-            res.status(500);
-            return errorToJson(e.getMessage());
+        } catch (Exception e) {
+            res.status(400);
+            return errorToJson("Error: bad request");
         }
     }
 

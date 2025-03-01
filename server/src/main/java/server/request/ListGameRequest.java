@@ -1,6 +1,6 @@
 package server.request;
 
-public record ListGameRequest(String authToken) implements RecordRequest{
+public record ListGameRequest(String authToken) implements RecordRequest {
     public ListGameRequest addAuth(String authToken) {
         return new ListGameRequest(authToken);
     }

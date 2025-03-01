@@ -1,6 +1,6 @@
 package server.request;
 
-public record ClearRequest() implements RecordRequest{
+public record ClearRequest() implements RecordRequest {
     @Override
     public RecordRequest addAuth(String authToken) {
         return this;

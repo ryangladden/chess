@@ -1,6 +1,6 @@
 package server.request;
 
-public record LogoutRequest(String authToken) implements RecordRequest{
+public record LogoutRequest(String authToken) implements RecordRequest {
     @Override
     public LogoutRequest addAuth(String authToken) {
         return new LogoutRequest(authToken);

@@ -1,5 +1,7 @@
 package server.handlers;
+
 import dataaccess.ColorTakenException;
+import dataaccess.InvalidGameID;
 import dataaccess.UnauthorizedException;
 import server.InvalidRequest;
 import server.request.JoinGameRequest;
@@ -7,7 +9,7 @@ import service.GameService;
 import spark.Request;
 import spark.Response;
 
-public class JoinGameHandler implements Handler{
+public class JoinGameHandler implements Handler {
 
     GameService service;
 
@@ -23,15 +25,19 @@ public class JoinGameHandler implements Handler{
         } catch (UnauthorizedException e) {
             res.status(401);
             return errorToJson(e.getMessage());
-        } catch(InvalidRequest e) {
+        } catch (InvalidRequest e) {
             res.status(400);
             return errorToJson(e.getMessage());
-        } catch(ColorTakenException e) {
+        } catch (ColorTakenException e) {
             res.status(403);
             return errorToJson(e.getMessage());
-        } catch(Exception e) {
-            res.status(500);
+        } catch (InvalidGameID e) {
+            res.status(400);
             return errorToJson(e.getMessage());
+        } catch (Exception e) {
+            res.status(400);
+            return errorToJson("Error: bad request");
         }
+
     }
 }

@@ -26,7 +26,7 @@ abstract class DataAccess {
 
     abstract Collection<GameData> listGames();
 
-    abstract void joinGame(UserData user, int gameID, String playerColor) throws InvalidRequest, ColorTakenException;
+    abstract void joinGame(UserData user, int gameID, String playerColor) throws InvalidRequest, ColorTakenException, InvalidGameID;
 
     abstract void clear();
 }

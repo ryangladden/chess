@@ -5,8 +5,8 @@ import dataaccess.*;
 import server.request.LoginRequest;
 import server.request.LogoutRequest;
 import server.request.RegisterRequest;
-import server.response.*;
-import com.google.gson.Gson;
+import server.response.LoginResponse;
+import server.response.LogoutResponse;
 
 import java.util.UUID;
 
@@ -20,8 +20,7 @@ public class UserService extends Service {
         UserData user = memoryData.getUser(req.username());
         if (user == null || !req.password().equals(user.password())) {
             throw new UnauthorizedException("Error: unauthorized");
-        }
-       else {
+        } else {
             AuthData authData = createAuth(user);
             return new LoginResponse(200, authData);
         }

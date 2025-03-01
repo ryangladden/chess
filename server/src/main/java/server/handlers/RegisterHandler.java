@@ -1,17 +1,15 @@
 package server.handlers;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import dataaccess.DataAccessException;
-import server.request.*;
-import server.response.*;
-import server.*;
-import service.*;
+import server.InvalidRequest;
+import server.request.RegisterRequest;
+import server.response.LoginResponse;
 import service.UserService;
 import spark.Request;
 import spark.Response;
 
-public class RegisterHandler implements Handler{
+public class RegisterHandler implements Handler {
 
     private UserService service;
 
@@ -31,9 +29,9 @@ public class RegisterHandler implements Handler{
         } catch (DataAccessException e) {
             res.status(403);
             return errorToJson(e.getMessage());
-        } catch(Exception e) {
-            res.status(500);
-            return errorToJson(e.getMessage());
+        } catch (Exception e) {
+            res.status(400);
+            return errorToJson("Error: bad request");
         }
     }
 

@@ -1,10 +1,8 @@
 package service;
-import dataaccess.AuthData;
+
 import dataaccess.MemoryDataAccess;
 import dataaccess.UnauthorizedException;
 import dataaccess.UserData;
-
-import java.util.UUID;
 
 public abstract class Service {
 

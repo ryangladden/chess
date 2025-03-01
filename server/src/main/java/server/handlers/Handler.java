@@ -3,10 +3,10 @@ package server.handlers;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import server.InvalidRequest;
-import server.request.*;
+import server.request.ListGameRequest;
+import server.request.LogoutRequest;
+import server.request.RecordRequest;
 import spark.Request;
-
-import java.lang.reflect.Type;
 
 public interface Handler {
 
@@ -19,8 +19,7 @@ public interface Handler {
         try {
             if (recordType == LogoutRequest.class) {
                 return new LogoutRequest(getAuthToken(req));
-            }
-            else if (recordType == ListGameRequest.class) {
+            } else if (recordType == ListGameRequest.class) {
                 return new ListGameRequest(getAuthToken(req));
             }
             Gson serializer = new Gson();

@@ -9,7 +9,6 @@ import server.response.CreateGameResponse;
 import server.response.JoinGameResponse;
 import server.response.ListGameResponse;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class GameService extends Service {
@@ -33,7 +32,7 @@ public class GameService extends Service {
         return new ListGameResponse(games);
     }
 
-    public JoinGameResponse joinGame(JoinGameRequest req) throws UnauthorizedException, InvalidRequest, ColorTakenException {
+    public JoinGameResponse joinGame(JoinGameRequest req) throws UnauthorizedException, InvalidRequest, ColorTakenException, InvalidGameID {
         UserData user = authenticate(req.authToken());
         memoryData.joinGame(user, req.gameID(), req.playerColor());
         return new JoinGameResponse(200);

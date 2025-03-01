@@ -1,7 +1,5 @@
 package server.request;
 
-import spark.Request;
-
 public record CreateGameRequest(String authToken, String gameName) implements RecordRequest {
 
     @Override

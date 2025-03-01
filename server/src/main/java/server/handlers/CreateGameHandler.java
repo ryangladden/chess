@@ -8,7 +8,7 @@ import service.GameService;
 import spark.Request;
 import spark.Response;
 
-public class CreateGameHandler implements Handler{
+public class CreateGameHandler implements Handler {
 
     private GameService service;
 
@@ -28,9 +28,9 @@ public class CreateGameHandler implements Handler{
         } catch (InvalidRequest e) {
             res.status(400);
             return errorToJson(e.getMessage());
-        } catch(Exception e) {
-            res.status(500);
-            return errorToJson(e.getMessage());
+        } catch (Exception e) {
+            res.status(400);
+            return errorToJson("Error: bad request");
         }
     }
 

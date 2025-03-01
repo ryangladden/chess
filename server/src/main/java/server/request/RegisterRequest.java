@@ -1,6 +1,6 @@
 package server.request;
 
-public record RegisterRequest(String username, String password, String email) implements RecordRequest{
+public record RegisterRequest(String username, String password, String email) implements RecordRequest {
     @Override
     public RecordRequest addAuth(String authToken) {
         return null;

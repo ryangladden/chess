@@ -4,11 +4,11 @@ import dataaccess.MemoryDataAccess;
 import server.handlers.*;
 import service.GameService;
 import service.UserService;
-import spark.*;
 import spark.Request;
 import spark.Response;
+import spark.Spark;
 
-public class Server{
+public class Server {
 
     MemoryDataAccess memoryData = new MemoryDataAccess();
     UserService userService = new UserService(memoryData);
@@ -21,7 +21,7 @@ public class Server{
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::registerUser);
-        Spark.post("/session",  this::login);
+        Spark.post("/session", this::login);
         Spark.delete("/session", this::logout);
         Spark.get("/game", this::listGames);
         Spark.post("/game", this::createGame);
@@ -29,7 +29,6 @@ public class Server{
         Spark.delete("/db", this::clear);
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
-
 
 
         Spark.awaitInitialization();
