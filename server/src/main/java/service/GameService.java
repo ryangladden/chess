@@ -1,6 +1,8 @@
 package service;
 
 import dataaccess.*;
+import model.GameData;
+import model.UserData;
 import server.InvalidRequest;
 import server.request.CreateGameRequest;
 import server.request.JoinGameRequest;

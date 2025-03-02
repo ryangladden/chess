@@ -1,7 +1,7 @@
 package service;
 
 import dataaccess.DataAccessException;
-import dataaccess.GameData;
+import model.GameData;
 import dataaccess.MemoryDataAccess;
 import dataaccess.UnauthorizedException;
 import org.junit.jupiter.api.Assertions;

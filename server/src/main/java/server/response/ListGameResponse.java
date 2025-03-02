@@ -1,6 +1,6 @@
 package server.response;
 
-import dataaccess.GameData;
+import model.GameData;
 
 import java.util.Collection;
 

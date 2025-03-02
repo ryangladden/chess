@@ -2,7 +2,7 @@ package service;
 
 import dataaccess.MemoryDataAccess;
 import dataaccess.UnauthorizedException;
-import dataaccess.UserData;
+import model.UserData;
 
 public abstract class Service {
 

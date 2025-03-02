@@ -1,6 +1,6 @@
 package server.response;
 
-import dataaccess.AuthData;
+import model.AuthData;
 
 public record RegisterResponse(int status, AuthData authData) {
 }

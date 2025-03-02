@@ -1,9 +1,9 @@
 package service;
 
-import dataaccess.AuthData;
+import model.AuthData;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
-import dataaccess.UserData;
+import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
