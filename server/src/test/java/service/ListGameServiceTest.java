@@ -1,4 +1,4 @@
-package passoff.service;
+package service;
 
 import dataaccess.DataAccessException;
 import dataaccess.GameData;
@@ -12,8 +12,6 @@ import server.request.ListGameRequest;
 import server.request.RegisterRequest;
 import server.response.CreateGameResponse;
 import server.response.ListGameResponse;
-import service.GameService;
-import service.UserService;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +39,7 @@ public class ListGameServiceTest {
         gameIDs = new ArrayList<Integer>();
         gameIDs.add(gameService.createNewGame(new CreateGameRequest(authToken, gameName)).gameID());
         gameData = new ArrayList<GameData>();
-        gameData.add(new GameData(1,null, null, gameName, null));
+        gameData.add(new GameData(1, null, null, gameName, null));
         expected = new ListGameResponse(gameData);
     }
 
@@ -67,7 +65,7 @@ public class ListGameServiceTest {
         int newGameID = createRes.gameID();
 
         ListGameRequest listReq = new ListGameRequest(authToken);
-        ListGameResponse listRes= gameService.listGames(listReq);
+        ListGameResponse listRes = gameService.listGames(listReq);
         GameData actual = (GameData) listRes.games().toArray()[1];
 
         Assertions.assertEquals(expected, listRes);

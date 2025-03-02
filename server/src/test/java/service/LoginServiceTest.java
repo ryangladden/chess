@@ -1,12 +1,12 @@
-package passoff.service;
+package service;
 
 import dataaccess.*;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import server.request.LoginRequest;
 import server.response.LoginResponse;
-import service.UserService;
+
 import java.util.UUID;
 
 public class LoginServiceTest {
@@ -39,14 +39,14 @@ public class LoginServiceTest {
         UnauthorizedException exception = new UnauthorizedException("Error: unauthorized");
         LoginRequest request = new LoginRequest("joemama", "Password");
 
-        Assertions.assertThrows(UnauthorizedException.class, ()->service.login(request));
+        Assertions.assertThrows(UnauthorizedException.class, () -> service.login(request));
     }
 
     @Test
     public void userDoesNotExist() {
         LoginRequest request = new LoginRequest("joemam", "password");
 
-        UnauthorizedException exception = Assertions.assertThrows(UnauthorizedException.class, ()->service.login(request));
+        UnauthorizedException exception = Assertions.assertThrows(UnauthorizedException.class, () -> service.login(request));
         Assertions.assertEquals("Error: unauthorized", exception.getMessage());
     }
 

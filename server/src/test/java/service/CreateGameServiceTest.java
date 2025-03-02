@@ -1,4 +1,4 @@
-package passoff.service;
+package service;
 
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
@@ -10,8 +10,6 @@ import server.InvalidRequest;
 import server.request.CreateGameRequest;
 import server.request.RegisterRequest;
 import server.response.CreateGameResponse;
-import service.GameService;
-import service.UserService;
 
 public class CreateGameServiceTest {
 
@@ -44,7 +42,7 @@ public class CreateGameServiceTest {
     public void gameNameNull() {
         CreateGameRequest newGameReq = new CreateGameRequest(authToken, null);
 
-        InvalidRequest exception = Assertions.assertThrows(InvalidRequest.class, ()->service.createNewGame(newGameReq));
+        InvalidRequest exception = Assertions.assertThrows(InvalidRequest.class, () -> service.createNewGame(newGameReq));
         Assertions.assertEquals("Error: bad request", exception.getMessage());
     }
 }

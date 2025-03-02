@@ -1,12 +1,15 @@
-package passoff.service;
+package service;
 
-import dataaccess.*;
+import dataaccess.AuthData;
+import dataaccess.DataAccessException;
+import dataaccess.MemoryDataAccess;
+import dataaccess.UserData;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import server.request.RegisterRequest;
 import server.response.LoginResponse;
-import service.UserService;
+
 import java.util.UUID;
 
 public class RegisterServiceTest {
