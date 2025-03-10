@@ -9,9 +9,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
+
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class DatabaseDataAccess extends DataAccess{
 
@@ -103,22 +107,78 @@ public class DatabaseDataAccess extends DataAccess{
 
     @Override
     void removeAuthToken(String authToken) {
-
+        String sql = "DELETE FROM auth WHERE token = ?";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, authToken);
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     int createNewGame(String gameName) {
-        return 0;
+        String sql = "INSERT INTO games (name) VALUES (?)";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(sql, RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, gameName);
+                stmt.executeUpdate();
+                ResultSet rs = stmt.getGeneratedKeys();
+                rs.next();
+                int id = rs.getInt(1);
+                return id;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     Collection<GameData> listGames() {
-        return List.of();
+        String sql = "SELECT * FROM games";
+        Collection<GameData> games = new ArrayList<>();
+        try(Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    System.out.println(rs.getInt("id"));
+                    GameData game = getGame(rs);
+                    games.add(game);
+                }
+                return games;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (DataAccessException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     void joinGame(UserData user, int gameID, String playerColor) throws InvalidRequest, ColorTakenException, InvalidGameID {
-
+        String sql = "SELECT * FROM games WHERE id = ?";
+        String join = playerColor == "WHITE" ? "INSERT INTO games (white) VALUES ?" : "INSERT INTO games (black) VALUES ?";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, gameID);
+                ResultSet rs = stmt.executeQuery();
+                int colorId = 0;
+                if (rs.next()) {
+                    colorId = playerColor == "WHITE" ? rs.getInt("white") : rs.getInt("black");
+                }
+                if (colorId ==)
+            }
+        }
     }
 
     @Override
@@ -179,8 +239,11 @@ public class DatabaseDataAccess extends DataAccess{
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, id);
                 ResultSet rs = stmt.executeQuery();
-                rs.next();
-                return new UserData(rs.getString("username"), rs.getString("password"), rs.getString("email"));
+                if (rs.next()) {
+                    return new UserData(rs.getString("username"), rs.getString("password"), rs.getString("email"));
+                } else {
+                    return null;
+                }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -189,19 +252,40 @@ public class DatabaseDataAccess extends DataAccess{
         }
     }
 
-    private int getIDfromUsername(String username) {
+    private Integer getIDfromUsername(String username) {
         String sql = "SELECT id FROM users WHERE username = ?";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, username);
                 ResultSet rs = stmt.executeQuery();
-                rs.next();
-                return rs.getInt("id");
+                if (rs.next()) {
+                    return rs.getInt("id");
+                } else {
+                    return null;
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private GameData getGame(ResultSet rs) throws SQLException, DataAccessException {
+        int id = rs.getInt("id");
+        int whiteResult = rs.getInt("white");
+        int blackResult = rs.getInt("black");
+        String gameName = rs.getString("name");
+        return new GameData(
+                id,
+                whiteResult == 0 ? null : getUserFromID(whiteResult).username(),
+                blackResult == 0 ? null : getUserFromID(blackResult).username(),
+                gameName,
+                null
+        );
+    }
+
+    private boolean validJoinGame(int gameID, String playerColor) {
+
     }
 }
