@@ -14,13 +14,13 @@ import java.util.UUID;
 
 public class UserService extends Service {
 
-    public UserService(MemoryDataAccess memoryData) {
+    public UserService(DataAccess memoryData) {
         super(memoryData);
     }
 
     public LoginResponse login(LoginRequest req) throws UnauthorizedException {
         UserData user = memoryData.getUser(req.username());
-        if (user == null || !req.password().equals(user.password())) {
+        if (memoryData.isValidPassword) {
             throw new UnauthorizedException("Error: unauthorized");
         } else {
             AuthData authData = createAuth(user);

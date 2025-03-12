@@ -15,7 +15,7 @@ import java.util.Collection;
 
 public class GameService extends Service {
 
-    public GameService(MemoryDataAccess memoryData) {
+    public GameService(DataAccess memoryData) {
         super(memoryData);
     }
 

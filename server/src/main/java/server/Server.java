@@ -1,5 +1,7 @@
 package server;
 
+import dataaccess.DataAccess;
+import dataaccess.DatabaseDataAccess;
 import dataaccess.MemoryDataAccess;
 import server.handlers.*;
 import service.GameService;
@@ -10,9 +12,19 @@ import spark.Spark;
 
 public class Server {
 
-    MemoryDataAccess memoryData = new MemoryDataAccess();
-    UserService userService = new UserService(memoryData);
-    GameService gameService = new GameService(memoryData);
+    DataAccess memoryData;
+    UserService userService;
+    GameService gameService;
+
+    public Server() {
+        try {
+            memoryData = new DatabaseDataAccess();
+            userService = new UserService(memoryData);
+            gameService = new GameService(memoryData);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);

@@ -1,14 +1,15 @@
 package service;
 
+import dataaccess.DataAccess;
 import dataaccess.MemoryDataAccess;
 import dataaccess.UnauthorizedException;
 import model.UserData;
 
 public abstract class Service {
 
-    MemoryDataAccess memoryData;
+    DataAccess memoryData;
 
-    public Service(MemoryDataAccess memoryData) {
+    public Service(DataAccess memoryData) {
         this.memoryData = memoryData;
     }
 

@@ -26,6 +26,14 @@ public class MemoryDataAccess extends DataAccess {
         users.put(user.username(), user);
     }
 
+    public boolean isValidPassword(String username, String password) {
+        UserData user = getUser(username);
+        if (user == null) {
+            return false;
+        }
+        return password.equals(user.password());
+    }
+
     @Override
     public UserData getUser(String username) {
         return users.getOrDefault(username, null);
