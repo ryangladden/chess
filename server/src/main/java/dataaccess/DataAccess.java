@@ -22,7 +22,7 @@ public abstract class DataAccess {
 
     public abstract UserData getUser(String username);
 
-    public abstract void removeAuthToken(String authToken);
+    public abstract void removeAuthToken(String authToken) throws UnauthorizedException;
 
     public abstract int createNewGame(String gameName);
 

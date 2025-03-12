@@ -1,10 +1,7 @@
 package dataaccess;
 
 import model.UserData;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.ResultSet;
@@ -30,6 +27,7 @@ public class RegisterDatabaseTest {
     }
 
     @Test
+    @DisplayName("Register new user")
     public void registerUser() throws Exception {
         dataAccess.createUser(newUser);
         ResultSet query = TestUtilities.queryDatabase("SELECT * FROM users WHERE username = '" + newUser.username() + "';");
@@ -39,6 +37,7 @@ public class RegisterDatabaseTest {
     }
 
     @Test
+    @DisplayName("Fails to Create Existing User")
     public void attemptRegisterUserExists() throws Exception {
         dataAccess.createUser(newUser);
 

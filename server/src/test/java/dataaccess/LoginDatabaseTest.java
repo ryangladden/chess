@@ -14,8 +14,6 @@ public class LoginDatabaseTest {
 
     DatabaseDataAccess dataAccess;
     UserData newUser = new UserData("joemama", "password", "joemama@email.com");
-    UserData sameUsername = new UserData("joemama", "pw", "joe@email.com");
-    UserData differentUser = new UserData("joemamajr", "pAsSwOrD", "junior.joe.mama@gmail.com");
     AuthData auth = new AuthData(UUID.randomUUID().toString(), newUser.username());
 
     @BeforeEach

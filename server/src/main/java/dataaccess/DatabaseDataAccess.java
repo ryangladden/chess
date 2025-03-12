@@ -129,17 +129,20 @@ public class DatabaseDataAccess extends DataAccess {
     }
 
     @Override
-    public void removeAuthToken(String authToken) {
+    public void removeAuthToken(String authToken) throws UnauthorizedException {
         String sql = "DELETE FROM auth WHERE token = ?";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                if (authenticate(authToken) == null) {
+                    throw new UnauthorizedException("Error: unauthorized");
+                }
                 stmt.setString(1, authToken);
                 stmt.executeUpdate();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new UnauthorizedException(e.getMessage());
         }
     }
 
@@ -148,6 +151,9 @@ public class DatabaseDataAccess extends DataAccess {
         String sql = "INSERT INTO games (name) VALUES (?)";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(sql, RETURN_GENERATED_KEYS)) {
+                if (gameName.isEmpty()) {
+                    throw new DataAccessException("Error: invalid game name");
+                }
                 stmt.setString(1, gameName);
                 stmt.executeUpdate();
                 ResultSet rs = stmt.getGeneratedKeys();

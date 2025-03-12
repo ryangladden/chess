@@ -56,7 +56,10 @@ public class MemoryDataAccess extends DataAccess {
     }
 
     @Override
-    public void removeAuthToken(String authToken) {
+    public void removeAuthToken(String authToken) throws UnauthorizedException {
+        if (!authTokens.containsKey(authToken)) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
         authTokens.remove(authToken);
     }
 

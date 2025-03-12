@@ -35,12 +35,12 @@ public class TestUtilities {
         }
     }
 
-    static void removeGame(GameData game) {
-        String sql = "DELETE FROM games WHERE id = ?";
+    static void removeGame(String gameName) {
+        String sql = "DELETE FROM games WHERE name = ?";
         try {
             Connection conn = DatabaseManager.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, game.gameID());
+            stmt.setString(1, gameName);
             stmt.executeUpdate();
         } catch (Exception e) {
             throw new RuntimeException(e);
