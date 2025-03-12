@@ -39,6 +39,9 @@ public class UserService extends Service {
 
     public LoginResponse register(RegisterRequest req) throws DataAccessException {
         var user = new UserData(req.username(), req.password(), req.email());
+        if (user.password() == null) {
+            throw new DataAccessException("Error: bad request");
+        }
         memoryData.createUser(user);
         System.out.println("You made it here");
         return login(new LoginRequest(req.username(), req.password()));

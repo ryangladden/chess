@@ -32,7 +32,7 @@ public class JoinGameHandler implements Handler {
             res.status(403);
             return errorToJson(e.getMessage());
         } catch (InvalidGameID e) {
-            res.status(403);
+            res.status(400);
             return errorToJson(e.getMessage());
         } catch (Exception e) {
             res.status(400);

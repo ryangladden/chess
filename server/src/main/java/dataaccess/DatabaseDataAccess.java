@@ -211,7 +211,7 @@ public class DatabaseDataAccess extends DataAccess {
                 throw new RuntimeException(e);
             }
         } else {
-            throw new InvalidGameID("Error: game taken");
+            throw new ColorTakenException("Error: game taken");
         }
     }
 
@@ -345,19 +345,17 @@ public class DatabaseDataAccess extends DataAccess {
         );
     }
 
-    private boolean validJoinGame(int gameID, String playerColor) {
+    private boolean validJoinGame(int gameID, String playerColor) throws InvalidGameID {
         String sql = "SELECT * FROM games WHERE id = ?";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, gameID);
                 ResultSet rs = stmt.executeQuery();
-                int colorId = 0;
                 if (rs.next()) {
-                    colorId = rs.getInt(playerColor.toLowerCase());
-                    System.out.println(rs.getInt(playerColor.toLowerCase()));
+                    int colorId = rs.getInt(playerColor.toLowerCase());
                     return (colorId == 0);
                 } else {
-                    throw new InvalidRequest("Error: bad request");
+                    throw new InvalidGameID("Error: game does not exist");
                 }
             }
         } catch (SQLException e) {
