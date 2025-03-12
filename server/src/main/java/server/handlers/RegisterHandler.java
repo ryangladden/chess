@@ -34,9 +34,6 @@ public class RegisterHandler implements Handler {
         } catch (DataAccessException e) {
             res.status(400);
             return errorToJson(e.getMessage());
-        } catch (Exception e) {
-            res.status(400);
-            return errorToJson("Error: bad request in registration");
         }
     }
 

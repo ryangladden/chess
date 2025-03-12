@@ -28,6 +28,7 @@ public class DatabaseDataAccess extends DataAccess {
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
+        System.out.println("This actually printed something");
         String sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
         if (checkUsername(user.username())) {
             throw new UserExistsException("Error: username taken");
@@ -39,9 +40,11 @@ public class DatabaseDataAccess extends DataAccess {
                 stmt.setString(3, user.email());
                 stmt.executeUpdate();
             } catch (SQLException e) {
+                System.out.println("what the heck");
                 throw new DataAccessException("Error: registration failed");
             }
         } catch (SQLException e) {
+            System.out.println("what the heck x2");
             throw new DataAccessException("Error: failure to connect to database");
         }
     }
@@ -81,14 +84,17 @@ public class DatabaseDataAccess extends DataAccess {
 
     @Override
     public void createAuth(AuthData authData) throws DataAccessException {
+        System.out.println("Auth creation step in DB");
         try (Connection conn = DatabaseManager.getConnection()) {
             String sql = "INSERT INTO auth (token, user_id) VALUES (?, ?)";
             try (var stmt = conn.prepareStatement(sql)) {
+                System.out.println("this is the part that I really need to get to");
                 stmt.setString(1, authData.authToken());
                 stmt.setInt(2, getIDfromUsername(authData.username()));
                 stmt.executeUpdate();
             }
         } catch (SQLException e) {
+            System.out.println("auth error right here!");
             throw new DataAccessException("Error: auth could not be created");
         }
     }
@@ -115,6 +121,18 @@ public class DatabaseDataAccess extends DataAccess {
 
     @Override
     public UserData getUser(String username) {
+        String sql = "SELECT * FROM users WHERE username = ?";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    return new UserData(rs.getString("username"), null, rs.getString("email"));
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 
@@ -294,6 +312,7 @@ public class DatabaseDataAccess extends DataAccess {
     }
 
     private Integer getIDfromUsername(String username) {
+        System.out.println("Here I'm getting the id from the username");
         String sql = "SELECT id FROM users WHERE username = ?";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
