@@ -18,7 +18,7 @@ public class Server {
 
     public Server() {
         try {
-            memoryData = new DatabaseDataAccess();
+            memoryData = new MemoryDataAccess();
             userService = new UserService(memoryData);
             gameService = new GameService(memoryData);
         } catch (Exception e) {

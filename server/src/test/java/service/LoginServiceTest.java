@@ -25,7 +25,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void loginExistingUser() throws UnauthorizedException {
+    public void loginExistingUser() throws DataAccessException {
         LoginRequest request = new LoginRequest("joemama", "password");
         LoginResponse expected = new LoginResponse(200, new AuthData(UUID.randomUUID().toString(), "joemama"));
 

@@ -18,13 +18,12 @@ public class UserService extends Service {
         super(memoryData);
     }
 
-    public LoginResponse login(LoginRequest req) throws UnauthorizedException {
-        UserData user = memoryData.getUser(req.username());
-        if (memoryData.isValidPassword) {
-            throw new UnauthorizedException("Error: unauthorized");
-        } else {
-            AuthData authData = createAuth(user);
+    public LoginResponse login(LoginRequest req) throws UnauthorizedException, DataAccessException {
+        if (memoryData.isValidPassword(req.username(), req.password())) {
+            AuthData authData = createAuth(memoryData.getUser(req.username()));
             return new LoginResponse(200, authData);
+        } else {
+            throw new UnauthorizedException("Error: unauthorized");
         }
     }
 

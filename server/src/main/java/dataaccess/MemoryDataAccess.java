@@ -6,6 +6,7 @@ import model.GameData;
 import model.UserData;
 import server.InvalidRequest;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,12 +27,17 @@ public class MemoryDataAccess extends DataAccess {
         users.put(user.username(), user);
     }
 
-    public boolean isValidPassword(String username, String password) {
-        UserData user = getUser(username);
-        if (user == null) {
-            return false;
+    @Override
+    public boolean isValidPassword(String username, String password) throws DataAccessException {
+        try {
+            UserData user = getUser(username);
+            if (user == null) {
+                return false;
+            }
+            return password.equals(user.password());
+        } catch (Exception e) {
+            throw new DataAccessException("Error: internal server error");
         }
-        return password.equals(user.password());
     }
 
     @Override

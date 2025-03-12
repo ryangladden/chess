@@ -5,6 +5,7 @@ import model.GameData;
 import model.UserData;
 import server.InvalidRequest;
 
+import javax.xml.crypto.Data;
 import java.util.Collection;
 
 public abstract class DataAccess {
@@ -16,6 +17,8 @@ public abstract class DataAccess {
     public abstract void createAuth(AuthData authData);
 
     public abstract UserData authenticate(String authToken);
+
+    public abstract boolean isValidPassword(String username, String password) throws DataAccessException;
 
     public abstract UserData getUser(String username);
 
