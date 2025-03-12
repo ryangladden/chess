@@ -22,7 +22,7 @@ public class MemoryDataAccess extends DataAccess {
     @Override
     public void createUser(UserData user) throws DataAccessException {
         if (users.getOrDefault(user.username(), null) != null) {
-            throw new DataAccessException("Error: username taken");
+            throw new UserExistsException("Error: username taken");
         }
         users.put(user.username(), user);
     }

@@ -26,7 +26,7 @@ public class LogoutHandler implements Handler {
             return errorToJson(e.getMessage());
         } catch (Exception e) {
             res.status(400);
-            return errorToJson("Error: bad request");
+            return errorToJson("Error: bad request in loggin out");
         }
     }
 

@@ -14,9 +14,9 @@ public abstract class DataAccess {
 
     public abstract void createUser(UserData user) throws DataAccessException;
 
-    public abstract void createAuth(AuthData authData);
+    public abstract void createAuth(AuthData authData) throws DataAccessException;
 
-    public abstract UserData authenticate(String authToken);
+    public abstract UserData authenticate(String authToken) throws DataAccessException;
 
     public abstract boolean isValidPassword(String username, String password) throws DataAccessException;
 

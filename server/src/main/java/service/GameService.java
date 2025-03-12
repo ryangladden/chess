@@ -19,7 +19,7 @@ public class GameService extends Service {
         super(memoryData);
     }
 
-    public CreateGameResponse createNewGame(CreateGameRequest req) throws UnauthorizedException {
+    public CreateGameResponse createNewGame(CreateGameRequest req) throws DataAccessException {
         authenticate(req.authToken());
         if (req.gameName() == null) {
             throw new InvalidRequest("Error: bad request");
@@ -28,13 +28,13 @@ public class GameService extends Service {
         return new CreateGameResponse(200, gameID);
     }
 
-    public ListGameResponse listGames(ListGameRequest req) throws UnauthorizedException {
+    public ListGameResponse listGames(ListGameRequest req) throws DataAccessException {
         authenticate(req.authToken());
         Collection<GameData> games = memoryData.listGames();
         return new ListGameResponse(games);
     }
 
-    public JoinGameResponse joinGame(JoinGameRequest req) throws UnauthorizedException, InvalidRequest, ColorTakenException, InvalidGameID {
+    public JoinGameResponse joinGame(JoinGameRequest req) throws DataAccessException, ColorTakenException, InvalidGameID {
         UserData user = authenticate(req.authToken());
         memoryData.joinGame(user, req.gameID(), req.playerColor());
         return new JoinGameResponse(200);

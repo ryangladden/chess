@@ -33,7 +33,7 @@ public class JoinGameServiceTest {
     }
 
     @Test
-    public void joinGame() throws ColorTakenException, UnauthorizedException, InvalidGameID {
+    public void joinGame() throws ColorTakenException, DataAccessException, InvalidGameID {
         JoinGameRequest joinReq = new JoinGameRequest("BLACK", 1, authToken);
         gameService.joinGame(joinReq);
         ListGameRequest listReq = new ListGameRequest(authToken);
@@ -43,7 +43,7 @@ public class JoinGameServiceTest {
     }
 
     @Test
-    public void joinTeamTaken() throws ColorTakenException, UnauthorizedException, InvalidGameID {
+    public void joinTeamTaken() throws ColorTakenException, DataAccessException, InvalidGameID {
         JoinGameRequest joinReq = new JoinGameRequest("BLACK", 1, authToken);
         gameService.joinGame(joinReq);
         ColorTakenException exception = Assertions.assertThrows(ColorTakenException.class, () -> gameService.joinGame(joinReq));

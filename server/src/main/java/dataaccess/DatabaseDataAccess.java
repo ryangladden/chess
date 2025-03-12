@@ -22,28 +22,27 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 public class DatabaseDataAccess extends DataAccess {
 
 
-    public DatabaseDataAccess() throws Exception {
-        createDatabase();
+    public DatabaseDataAccess() throws DataAccessException {
+            createDatabase();
     }
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
         String sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
         if (checkUsername(user.username())) {
-            throw new UserExistsException("Error: already exists");
+            throw new UserExistsException("Error: username taken");
         }
         try (var conn = DatabaseManager.getConnection()) {
             try (var stmt = conn.prepareStatement(sql)) {
-                System.out.println("Arrived");
                 stmt.setString(1, user.username());
                 stmt.setString(2, encryptPassword(user.password()));
                 stmt.setString(3, user.email());
                 stmt.executeUpdate();
             } catch (SQLException e) {
-                throw new DataAccessException("Error: " + e.getMessage());
+                throw new DataAccessException("Error: registration failed");
             }
         } catch (SQLException e) {
-            throw new DataAccessException(("Error: " + e.getMessage()));
+            throw new DataAccessException("Error: failure to connect to database");
         }
     }
 
@@ -64,8 +63,6 @@ public class DatabaseDataAccess extends DataAccess {
             }
         } catch (SQLException e) {
             throw new DataAccessException("Error: internal server error");
-        } catch (DataAccessException e) {
-            throw new UnauthorizedException("Error: unauthorized");
         }
     }
 
@@ -78,12 +75,12 @@ public class DatabaseDataAccess extends DataAccess {
                 return rs.next();
             }
         } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("Error: internal server error");
         }
     }
 
     @Override
-    public void createAuth(AuthData authData) {
+    public void createAuth(AuthData authData) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
             String sql = "INSERT INTO auth (token, user_id) VALUES (?, ?)";
             try (var stmt = conn.prepareStatement(sql)) {
@@ -92,32 +89,27 @@ public class DatabaseDataAccess extends DataAccess {
                 stmt.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("Error: auth could not be created");
         }
     }
 
     @Override
-    public UserData authenticate(String authToken) {
+    public UserData authenticate(String authToken) throws DataAccessException {
         String sql = "SELECT user_id FROM auth WHERE token = ?";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, authToken);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
+                    System.out.println(rs.getInt("user_id"));
                     System.out.println(getUserFromID(rs.getInt("user_id")));
                     return getUserFromID(rs.getInt("user_id"));
                 } else {
                     return null;
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("Error: internal server error");
         }
     }
 
@@ -278,7 +270,7 @@ public class DatabaseDataAccess extends DataAccess {
                     stmt.executeUpdate();
                 }
         } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("Error: database could not be initialized");
         }
     }
 

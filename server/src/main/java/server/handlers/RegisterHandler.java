@@ -2,6 +2,8 @@ package server.handlers;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
+import dataaccess.UnauthorizedException;
+import dataaccess.UserExistsException;
 import server.InvalidRequest;
 import server.request.RegisterRequest;
 import server.response.LoginResponse;
@@ -26,12 +28,15 @@ public class RegisterHandler implements Handler {
         } catch (InvalidRequest e) {
             res.status(400);
             return errorToJson(e.getMessage());
-        } catch (DataAccessException e) {
+        } catch (UserExistsException e) {
             res.status(403);
+            return errorToJson(e.getMessage());
+        } catch (DataAccessException e) {
+            res.status(400);
             return errorToJson(e.getMessage());
         } catch (Exception e) {
             res.status(400);
-            return errorToJson("Error: bad request");
+            return errorToJson("Error: bad request in registration");
         }
     }
 

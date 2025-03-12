@@ -44,7 +44,7 @@ public class ListGameServiceTest {
     }
 
     @Test
-    public void listGame() throws UnauthorizedException {
+    public void listGame() throws DataAccessException {
         ListGameRequest listReq = new ListGameRequest(authToken);
 
         ListGameResponse actual = gameService.listGames(listReq);
@@ -53,7 +53,7 @@ public class ListGameServiceTest {
     }
 
     @Test
-    public void createAndListGames() throws UnauthorizedException {
+    public void createAndListGames() throws DataAccessException {
         String newGameName = "other kewl game";
         CreateGameRequest createReq = new CreateGameRequest(authToken, newGameName);
         Collection<GameData> expectedList = new ArrayList<GameData>();

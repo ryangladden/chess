@@ -27,7 +27,7 @@ public class UserService extends Service {
         }
     }
 
-    public LogoutResponse logout(LogoutRequest req) throws UnauthorizedException {
+    public LogoutResponse logout(LogoutRequest req) throws DataAccessException {
         String authToken = req.authToken();
         authenticate(req.authToken());
         memoryData.removeAuthToken(authToken);
@@ -41,7 +41,7 @@ public class UserService extends Service {
         return login(new LoginRequest(req.username(), req.password()));
     }
 
-    private AuthData createAuth(UserData userData) {
+    private AuthData createAuth(UserData userData) throws DataAccessException{
         AuthData authData = new AuthData(UUID.randomUUID().toString(), userData.username());
         memoryData.createAuth(authData);
         return authData;

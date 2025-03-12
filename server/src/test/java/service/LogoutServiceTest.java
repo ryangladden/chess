@@ -39,7 +39,7 @@ public class LogoutServiceTest {
     }
 
     @Test
-    public void logoutSuccess() throws UnauthorizedException {
+    public void logoutSuccess() throws DataAccessException {
         LogoutRequest logout = new LogoutRequest(authToken);
 
         LogoutResponse actual = service.logout(logout);

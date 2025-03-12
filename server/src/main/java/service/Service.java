@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import dataaccess.UnauthorizedException;
 import model.UserData;
@@ -13,7 +14,7 @@ public abstract class Service {
         this.memoryData = memoryData;
     }
 
-    protected UserData authenticate(String authToken) throws UnauthorizedException {
+    protected UserData authenticate(String authToken) throws DataAccessException {
         UserData user = memoryData.authenticate(authToken);
         if (user == null) {
             throw new UnauthorizedException("Error: unauthorized");

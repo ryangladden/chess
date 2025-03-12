@@ -31,7 +31,7 @@ public class CreateGameServiceTest {
     }
 
     @Test
-    public void createGameSuccess() throws UnauthorizedException {
+    public void createGameSuccess() throws DataAccessException {
         CreateGameRequest newGameReq = new CreateGameRequest(authToken, gameName);
         CreateGameResponse actual = service.createNewGame(newGameReq);
 

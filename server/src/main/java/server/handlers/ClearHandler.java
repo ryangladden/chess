@@ -19,7 +19,7 @@ public class ClearHandler implements Handler {
             return "";
         } catch (Exception e) {
             res.status(400);
-            return errorToJson("Error: bad request");
+            return errorToJson("Error: bad request in clearing");
         }
     }
 }
