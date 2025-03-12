@@ -49,4 +49,9 @@ public class LoginDatabaseTest {
 
         Assertions.assertEquals(userQuery.getString("username"), newUser.username());
     }
+
+    @Test
+    public void incorrectPassword() throws Exception {
+        Assertions.assertFalse(dataAccess.isValidPassword(newUser.username(), "newUser.password()"));
+    }
 }
