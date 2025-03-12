@@ -17,7 +17,7 @@ public class CreateGameDatabaseTest {
 
     @AfterEach
     public void cleanUp() {
-//        TestUtilities.removeGame(gameName);
+        TestUtilities.removeGame(gameName);
     }
 
     @Test

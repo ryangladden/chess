@@ -3,9 +3,7 @@ package dataaccess;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.sql.ResultSet;
 import java.util.UUID;
@@ -25,6 +23,7 @@ public class ClearDatabaseTest {
     }
 
     @Test
+    @DisplayName("Clear DB")
     public void clear() throws Exception {
         dataAccess.clear();
 
