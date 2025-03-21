@@ -22,16 +22,15 @@ public class ServerFacade {
     }
 
     public AuthData register(UserData user) {
-        makeRequest("POST", "/user", user, AuthData.class);
-        return null;
+        return makeRequest("POST", "/user", user, AuthData.class);
     }
 
     public AuthData login(UserData user) {
-        return null;
+        return makeRequest("POST", "/session", user, AuthData.class);
     }
 
     public void logout(String authToken) {
-
+        makeRequest("DELETE", "/session", null, null, authToken);
     }
 
     public int createGame(String gameName, String authToken) {
@@ -70,8 +69,7 @@ public class ServerFacade {
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> response) {
-        makeRequest(method, path, request, response, null);
-        return null;
+        return makeRequest(method, path, request, response, null);
     }
 
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
