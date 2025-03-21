@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -9,7 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class ServerFacade {
@@ -34,15 +37,23 @@ public class ServerFacade {
     }
 
     public int createGame(String gameName, String authToken) {
-        return 0;
+        record CreateGameRequest(String gameName){};
+        record CreateGameResponse(int gameID){};
+        CreateGameResponse response = makeRequest("POST", "/game", new CreateGameRequest(gameName), CreateGameResponse.class, authToken);
+        System.out.println(response.gameID());
+        return response.gameID();
     }
 
     public GameData[] listGames(String authToken) {
-        return null;
+        record Games(ArrayList<GameData> games) {};
+        Games games = makeRequest("GET", "/game", null, Games.class, authToken);
+        System.out.println(games);
+        return new GameData[]{};
     }
 
     public void joinGame(int gameId, String color, String authToken) {
-
+        record JoinGame(int gameID, String playerColor){};
+        makeRequest("PUT", "/game", new JoinGame(gameId, color), null, authToken);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) {
@@ -76,7 +87,6 @@ public class ServerFacade {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
             String json = new Gson().toJson(request);
-            System.out.println(json);
             try (OutputStream reqBody = http.getOutputStream()) {
                 reqBody.write(json.getBytes());
             }
