@@ -31,6 +31,6 @@ public class PostJoinRepl {
     }
 
     private void printPrompt() {
-        System.out.print("\n" + SET_TEXT_FAINT + "CHESS LOGIN >>> " + RESET_TEXT_BOLD_FAINT);
+        System.out.print("\n" + SET_TEXT_FAINT + "CHESS >>> " + RESET_TEXT_BOLD_FAINT);
     }
 }

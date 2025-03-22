@@ -3,6 +3,7 @@ import client.PostJoinClient;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import repl.PostJoinRepl;
 import repl.PreJoinRepl;
 import server.ServerFacade;
 
@@ -12,7 +13,8 @@ public class Main {
         PreJoinRepl preJoin = new PreJoinRepl(server);
         AuthData auth = preJoin.run();
         if (auth != null) {
-            PostJoinClient postJoin = new PostJoinClient(server, auth);
+            PostJoinRepl postJoin = new PostJoinRepl(server, auth);
+            postJoin.run();
         }
     }
 }

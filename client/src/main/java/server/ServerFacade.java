@@ -38,7 +38,6 @@ public class ServerFacade {
         record CreateGameRequest(String gameName){};
         record CreateGameResponse(int gameID){};
         CreateGameResponse response = makeRequest("POST", "/game", new CreateGameRequest(gameName), CreateGameResponse.class, authToken);
-        System.out.println(response.gameID());
         return response.gameID();
     }
 
@@ -48,7 +47,7 @@ public class ServerFacade {
         return games.games();
     }
 
-    public void joinGame(int gameId, String color, String authToken) throws AlreadyTaken, Unauthorized{
+    public void joinGame(int gameId, String color, String authToken) throws AlreadyTaken, Unauthorized, InvalidCommand {
         record JoinGame(int gameID, String playerColor){};
         makeRequest("PUT", "/game", new JoinGame(gameId, color), null, authToken);
     }
