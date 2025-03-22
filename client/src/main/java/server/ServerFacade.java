@@ -22,19 +22,19 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public AuthData register(UserData user) {
+    public AuthData register(UserData user) throws AlreadyTaken{
         return makeRequest("POST", "/user", user, AuthData.class);
     }
 
-    public AuthData login(UserData user) {
+    public AuthData login(UserData user) throws Unauthorized{
         return makeRequest("POST", "/session", user, AuthData.class);
     }
 
-    public void logout(String authToken) {
+    public void logout(String authToken) throws Unauthorized{
         makeRequest("DELETE", "/session", null, null, authToken);
     }
 
-    public int createGame(String gameName, String authToken) {
+    public int createGame(String gameName, String authToken) throws Unauthorized{
         record CreateGameRequest(String gameName){};
         record CreateGameResponse(int gameID){};
         CreateGameResponse response = makeRequest("POST", "/game", new CreateGameRequest(gameName), CreateGameResponse.class, authToken);
@@ -42,13 +42,13 @@ public class ServerFacade {
         return response.gameID();
     }
 
-    public GameData[] listGames(String authToken) {
+    public GameData[] listGames(String authToken) throws Unauthorized{
         record Games(GameData[] games) {};
         Games games = makeRequest("GET", "/game", null, Games.class, authToken);
         return games.games();
     }
 
-    public void joinGame(int gameId, String color, String authToken) {
+    public void joinGame(int gameId, String color, String authToken) throws AlreadyTaken, Unauthorized{
         record JoinGame(int gameID, String playerColor){};
         makeRequest("PUT", "/game", new JoinGame(gameId, color), null, authToken);
     }
@@ -102,9 +102,7 @@ public class ServerFacade {
 
     private void catchErrors(HttpURLConnection http) throws IOException, ChessClientException {
         int code = http.getResponseCode();
-        if (code == 200) {
-        }
-        else if (code == 500) {
+        if (code == 500) {
             throw new ServerConnectionError("Error: internal server error");
         }
         else if (code == 400) {
