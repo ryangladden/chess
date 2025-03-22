@@ -10,10 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.Type;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class ServerFacade {
 
@@ -45,10 +43,9 @@ public class ServerFacade {
     }
 
     public GameData[] listGames(String authToken) {
-        record Games(ArrayList<GameData> games) {};
+        record Games(GameData[] games) {};
         Games games = makeRequest("GET", "/game", null, Games.class, authToken);
-        System.out.println(games);
-        return new GameData[]{};
+        return games.games();
     }
 
     public void joinGame(int gameId, String color, String authToken) {
@@ -56,7 +53,7 @@ public class ServerFacade {
         makeRequest("PUT", "/game", new JoinGame(gameId, color), null, authToken);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) {
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ChessClientException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -67,15 +64,12 @@ public class ServerFacade {
             }
             writeBody(request, http);
             http.connect();
+            catchErrors(http);
             return readBody(http, responseClass);
-        } catch (ProtocolException e) {
-            throw new RuntimeException(e);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        } catch (ProtocolException | MalformedURLException | URISyntaxException | ConnectException e) {
+            throw new ServerConnectionError("Error connecting to the server");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getCause());
         }
     }
 
@@ -104,5 +98,23 @@ public class ServerFacade {
             }
         }
         return response;
+    }
+
+    private void catchErrors(HttpURLConnection http) throws IOException, ChessClientException {
+        int code = http.getResponseCode();
+        if (code == 200) {
+        }
+        else if (code == 500) {
+            throw new ServerConnectionError("Error: internal server error");
+        }
+        else if (code == 400) {
+            throw new InvalidCommand("Invalid command");
+        }
+        else if (code == 401) {
+            throw new Unauthorized("Invalid credentials");
+        }
+        else if (code == 403) {
+            throw new AlreadyTaken("Unique resource already taken");
+        }
     }
 }
