@@ -8,7 +8,7 @@ import repl.PreJoinRepl;
 import server.ServerFacade;
 
 public class Main {
-    static final ServerFacade server = new ServerFacade("http://localhost:8080");
+    static final ServerFacade server = new ServerFacade(8080);
     public static void main(String[] args) {
         boolean cont = true;
         while(cont) {

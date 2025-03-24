@@ -18,8 +18,8 @@ public class ServerFacade {
     private final String serverUrl;
 
 
-    public ServerFacade(String url) {
-        serverUrl = url;
+    public ServerFacade(int port) {
+        serverUrl = "http://localhost:" + port;
     }
 
     public AuthData register(UserData user) throws AlreadyTaken{
@@ -32,6 +32,10 @@ public class ServerFacade {
 
     public void logout(String authToken) throws Unauthorized{
         makeRequest("DELETE", "/session", null, null, authToken);
+    }
+
+    public void clear() {
+        makeRequest("DELETE", "/db", null, null);
     }
 
     public int createGame(String gameName, String authToken) throws Unauthorized{
