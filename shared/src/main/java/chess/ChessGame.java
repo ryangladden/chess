@@ -2,10 +2,8 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 import static chess.ChessPiece.PieceType.KING;
-import static chess.ChessPiece.PieceType.ROOK;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -13,7 +11,7 @@ import static chess.ChessPiece.PieceType.ROOK;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessGame implements Cloneable{
+public class ChessGame implements Cloneable {
 
     private TeamColor teamTurn;
     private ChessBoard board;
@@ -46,14 +44,6 @@ public class ChessGame implements Cloneable{
      */
     public void setTeamTurn(TeamColor team) {
         this.teamTurn = team;
-    }
-
-    /**
-     * Enum identifying the 2 possible teams in a chess game
-     */
-    public enum TeamColor {
-        WHITE,
-        BLACK
     }
 
     /**
@@ -96,18 +86,14 @@ public class ChessGame implements Cloneable{
         var piece = board.getPiece(pos);
         if (piece == null) {
             throw new InvalidMoveException("No piece at position " + move.getStartPosition());
-        }
-        else if (board.getPiece(pos).getTeamColor() != this.teamTurn){
+        } else if (board.getPiece(pos).getTeamColor() != this.teamTurn) {
             throw new InvalidMoveException("Not your turn, fool! Your team: " + piece.getTeamColor() + " but it's " + this.teamTurn + "'s turn");
-        }
-        else if (!validMoves(pos).contains(move)) {
+        } else if (!validMoves(pos).contains(move)) {
             throw new InvalidMoveException("Dawg this ain't gonna fly, you know that. Try a different move, son.");
-        }
-        else if (move.getPromotionPiece() != null){
+        } else if (move.getPromotionPiece() != null) {
             board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
             board.addPiece(move.getStartPosition(), null);
-        }
-        else {
+        } else {
             board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
             board.addPiece(move.getStartPosition(), null);
             teamTurn = (this.teamTurn == TeamColor.BLACK) ? (TeamColor.WHITE) : (TeamColor.BLACK);
@@ -186,6 +172,15 @@ public class ChessGame implements Cloneable{
             }
         }
         return noMoves;
+    }
+
+    /**
+     * Gets the current chessboard
+     *
+     * @return the chessboard
+     */
+    public ChessBoard getBoard() {
+        return this.board;
     }
 
 //    public Collection<ChessMove> getCastlingMoves(TeamColor teamColor) {
@@ -267,6 +262,7 @@ public class ChessGame implements Cloneable{
 //        }
 //        return canCastle;
 //    }
+
     /**
      * Sets this game's chessboard with a given board
      *
@@ -274,15 +270,6 @@ public class ChessGame implements Cloneable{
      */
     public void setBoard(ChessBoard board) {
         this.board = board;
-    }
-
-    /**
-     * Gets the current chessboard
-     *
-     * @return the chessboard
-     */
-    public ChessBoard getBoard() {
-        return this.board;
     }
 
     public Collection<ChessPosition> getPiecePositions() {
@@ -313,10 +300,6 @@ public class ChessGame implements Cloneable{
         return getPiece(teamColor, KING).getFirst();
     }
 
-//    public Collection<ChessPosition> getRooks(TeamColor teamColor) {
-//        return getPiece(teamColor, ROOK);
-//    }
-
     public ArrayList<ChessPosition> getPiece(TeamColor teamColor, ChessPiece.PieceType type) {
         Collection<ChessPosition> pieces = getPiecePositions();
         ArrayList<ChessPosition> piecesFound = new ArrayList<>();
@@ -332,18 +315,31 @@ public class ChessGame implements Cloneable{
         return piecesFound;
     }
 
+//    public Collection<ChessPosition> getRooks(TeamColor teamColor) {
+//        return getPiece(teamColor, ROOK);
+//    }
+
     @Override
     public ChessGame clone() {
         try {
             ChessGame clone = (ChessGame) super.clone();
             if (this.teamTurn == TeamColor.BLACK) {
                 clone.teamTurn = TeamColor.BLACK;
+            } else {
+                clone.teamTurn = TeamColor.WHITE;
             }
-            else { clone.teamTurn = TeamColor.WHITE; }
             clone.board = this.board.clone();
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    /**
+     * Enum identifying the 2 possible teams in a chess game
+     */
+    public enum TeamColor {
+        WHITE,
+        BLACK
     }
 }

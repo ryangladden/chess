@@ -1,6 +1,5 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static chess.ChessGame.TeamColor.WHITE;
@@ -11,7 +10,7 @@ import static chess.ChessGame.TeamColor.WHITE;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessPiece implements Cloneable{
+public class ChessPiece implements Cloneable {
 
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
@@ -28,7 +27,7 @@ public class ChessPiece implements Cloneable{
         if (this.pieceColor == ChessGame.TeamColor.BLACK) {
             color = 10;
         }
-        switch(type) {
+        switch (type) {
             case KING -> piece = 1;
             case QUEEN -> piece = 2;
             case PAWN -> piece = 3;
@@ -59,18 +58,6 @@ public class ChessPiece implements Cloneable{
     }
 
     /**
-     * The various different chess piece options
-     */
-    public enum PieceType {
-        KING,
-        QUEEN,
-        BISHOP,
-        KNIGHT,
-        ROOK,
-        PAWN
-    }
-
-    /**
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
@@ -92,7 +79,7 @@ public class ChessPiece implements Cloneable{
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        PieceMoveCalculator calc = switch(type) {
+        PieceMoveCalculator calc = switch (type) {
             case KING -> new KingMoveCalculator();
             case KNIGHT -> new KnightMoveCalculator();
             case QUEEN -> new QueenMoveCalculator();
@@ -127,6 +114,18 @@ public class ChessPiece implements Cloneable{
             rep = rep.toUpperCase();
         }
         return rep;
+    }
+
+    /**
+     * The various different chess piece options
+     */
+    public enum PieceType {
+        KING,
+        QUEEN,
+        BISHOP,
+        KNIGHT,
+        ROOK,
+        PAWN
     }
 
 

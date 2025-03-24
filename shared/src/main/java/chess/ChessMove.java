@@ -46,12 +46,13 @@ public class ChessMove {
 //                && other.getEndPosition() == this.getEndPosition()
 //                && this.getPromotionPiece() == other.getPromotionPiece()
 //        );
-        if (other.getPromotionPiece() == null && this.getPromotionPiece() == null)
-        {return other.getStartPosition().hashCode() == this.getStartPosition().hashCode()
-                && this.getEndPosition().hashCode() == other.getEndPosition().hashCode();}
-        else if (other.getPromotionPiece() == null && this.getPromotionPiece() != null
-                || other.getPromotionPiece() != null && this.getPromotionPiece() == null)
-        {return false;}
+        if (other.getPromotionPiece() == null && this.getPromotionPiece() == null) {
+            return other.getStartPosition().hashCode() == this.getStartPosition().hashCode()
+                    && this.getEndPosition().hashCode() == other.getEndPosition().hashCode();
+        } else if (other.getPromotionPiece() == null && this.getPromotionPiece() != null
+                || other.getPromotionPiece() != null && this.getPromotionPiece() == null) {
+            return false;
+        }
         return (other.getStartPosition().hashCode() == this.getStartPosition().hashCode()
                 && this.getEndPosition().hashCode() == other.getEndPosition().hashCode()
                 && this.getPromotionPiece().hashCode() == other.getPromotionPiece().hashCode());

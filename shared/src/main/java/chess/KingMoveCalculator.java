@@ -14,10 +14,10 @@ public class KingMoveCalculator implements PieceMoveCalculator {
                     if (isCapture(board, newMove)) {
                         System.out.printf("%s, %s\n", newMove.getStartPosition(), newMove.getEndPosition());
                     }
-                        possibilities.add(newMove);
-                    }
+                    possibilities.add(newMove);
                 }
             }
-            return possibilities;
         }
+        return possibilities;
     }
+}

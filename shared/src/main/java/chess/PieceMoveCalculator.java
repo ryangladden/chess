@@ -1,4 +1,3 @@
-
 package chess;
 
 import java.util.ArrayList;
@@ -34,44 +33,48 @@ public interface PieceMoveCalculator {
     default Collection<ChessMove> upDownMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> possibilities = new ArrayList<>();
         for (int i = 1; i < 8; i++) {
-            if (isValidMove(board,myPosition, myPosition.getRow() + i, myPosition.getColumn())) {
+            if (isValidMove(board, myPosition, myPosition.getRow() + i, myPosition.getColumn())) {
                 ChessMove newMove = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn()));
                 possibilities.add(newMove);
                 if (isCapture(board, newMove)) {
                     break;
                 }
+            } else {
+                break;
             }
-            else {break;}
         }
         for (int i = 1; i < 8; i++) {
-            if (isValidMove(board,myPosition, myPosition.getRow() - i, myPosition.getColumn())) {
+            if (isValidMove(board, myPosition, myPosition.getRow() - i, myPosition.getColumn())) {
                 ChessMove newMove = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - i, myPosition.getColumn()));
                 possibilities.add(newMove);
                 if (isCapture(board, newMove)) {
                     break;
                 }
+            } else {
+                break;
             }
-            else {break;}
         }
         for (int i = 1; i < 8; i++) {
-            if (isValidMove(board,myPosition, myPosition.getRow(), myPosition.getColumn() + i)) {
+            if (isValidMove(board, myPosition, myPosition.getRow(), myPosition.getColumn() + i)) {
                 ChessMove newMove = new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() + i));
                 possibilities.add(newMove);
                 if (isCapture(board, newMove)) {
                     break;
                 }
+            } else {
+                break;
             }
-            else {break;}
         }
         for (int i = 1; i < 8; i++) {
-            if (isValidMove(board,myPosition, myPosition.getRow(), myPosition.getColumn() - i)) {
+            if (isValidMove(board, myPosition, myPosition.getRow(), myPosition.getColumn() - i)) {
                 ChessMove newMove = new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() - i));
                 possibilities.add(newMove);
                 if (isCapture(board, newMove)) {
                     break;
                 }
+            } else {
+                break;
             }
-            else {break;}
         }
         return possibilities;
     }
@@ -79,44 +82,48 @@ public interface PieceMoveCalculator {
     default Collection<ChessMove> diagMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> possibilities = new ArrayList<>();
         for (int i = 1; i < 8; i++) {
-            if (isValidMove(board,myPosition, myPosition.getRow() + i, myPosition.getColumn() + i)) {
+            if (isValidMove(board, myPosition, myPosition.getRow() + i, myPosition.getColumn() + i)) {
                 ChessMove newMove = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i));
                 possibilities.add(newMove);
                 if (isCapture(board, newMove)) {
                     break;
                 }
+            } else {
+                break;
             }
-            else {break;}
         }
         for (int i = 1; i < 8; i++) {
-            if (isValidMove(board,myPosition, myPosition.getRow() - i, myPosition.getColumn() + i)) {
+            if (isValidMove(board, myPosition, myPosition.getRow() - i, myPosition.getColumn() + i)) {
                 ChessMove newMove = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() + i));
                 possibilities.add(newMove);
                 if (isCapture(board, newMove)) {
                     break;
                 }
+            } else {
+                break;
             }
-            else {break;}
         }
         for (int i = 1; i < 8; i++) {
-            if (isValidMove(board,myPosition, myPosition.getRow() + i, myPosition.getColumn() - i)) {
+            if (isValidMove(board, myPosition, myPosition.getRow() + i, myPosition.getColumn() - i)) {
                 ChessMove newMove = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() - i));
                 possibilities.add(newMove);
                 if (isCapture(board, newMove)) {
                     break;
                 }
+            } else {
+                break;
             }
-            else {break;}
         }
         for (int i = 1; i < 8; i++) {
-            if (isValidMove(board,myPosition, myPosition.getRow() - i, myPosition.getColumn() - i)) {
+            if (isValidMove(board, myPosition, myPosition.getRow() - i, myPosition.getColumn() - i)) {
                 ChessMove newMove = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() - i));
                 possibilities.add(newMove);
                 if (isCapture(board, newMove)) {
                     break;
                 }
+            } else {
+                break;
             }
-            else {break;}
         }
         return possibilities;
     }

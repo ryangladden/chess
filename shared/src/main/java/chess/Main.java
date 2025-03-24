@@ -9,5 +9,5 @@ public class Main {
         ChessPiece piece = board.getPiece(0, 4);
         System.out.print(piece);
 
-        }
     }
+}
