@@ -3,6 +3,8 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static chess.ChessGame.TeamColor.WHITE;
+
 /**
  * Represents a single chess piece
  * <p>
@@ -106,23 +108,17 @@ public class ChessPiece implements Cloneable{
         String rep;
         switch (type) {
             case PAWN:
-                rep = "p";
-                break;
+                return pieceColor == WHITE ? " ♙ " : " ♟ ";
             case ROOK:
-                rep = "r";
-                break;
+                return pieceColor == WHITE ? " ♖ " : " ♜ ";
             case BISHOP:
-                rep = "b";
-                break;
+                return pieceColor == WHITE ? " ♗ " : " ♝ ";
             case KNIGHT:
-                rep = "n";
-                break;
+                return pieceColor == WHITE ? " ♘ " : " ♞ ";
             case KING:
-                rep = "k";
-                break;
+                return pieceColor == WHITE ? " ♔ " : " ♚ ";
             case QUEEN:
-                rep = "q";
-                break;
+                return pieceColor == WHITE ? " ♕ " : " ♛ ";
             case null:
                 rep = ".";
                 break;

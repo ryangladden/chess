@@ -48,7 +48,7 @@ public class PreJoinClient {
                 return help();
             }
         } catch (AlreadyTaken e) {
-            return "Looks like that username is already taken; pick a new one and try again";
+            return SET_TEXT_COLOR_RED + "Looks like that username is already taken; pick a new one and try again" + RESET_TEXT_COLOR;
         }
     }
 

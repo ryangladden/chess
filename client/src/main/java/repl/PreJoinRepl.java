@@ -28,7 +28,7 @@ public class PreJoinRepl {
             String input = scanner.nextLine();
             try {
                 result = client.eval(input);
-                System.out.println(result);
+                printResult(result);
             } catch(ServerConnectionError e) {
                 result = printConnectionError();
             }
@@ -50,5 +50,13 @@ public class PreJoinRepl {
         System.out.println(SET_TEXT_COLOR_RED + "Uh oh! There was an issue connecting to the server\n"
                 + RESET_TEXT_COLOR + "Check your internet connection and try again.\nIf the problem persists, the server may be down and you should try again later." );
         return "quit";
+    }
+
+    private void printResult(String result) {
+        if (result != "quit") {
+            System.out.println(result);
+        } else {
+            System.out.println("Exiting");
+        }
     }
 }

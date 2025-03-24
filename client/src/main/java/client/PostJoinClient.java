@@ -1,7 +1,11 @@
 package client;
 
+import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessPiece;
 import model.AuthData;
 import model.GameData;
+import server.AlreadyTaken;
 import server.ServerFacade;
 import server.Unauthorized;
 
@@ -32,11 +36,11 @@ public class PostJoinClient {
         try {
             if (command.length >= 2) {
                 int id = server.createGame(command[1], auth.authToken());
-                return "Game \"" + command[1] + "\" created with ID " + id;
+                return SET_TEXT_COLOR_BLUE + "Game \"" + command[1] + "\" created with ID " + id + RESET_TEXT_COLOR;
             }
             return help();
         } catch (Unauthorized e) {
-            throw new RuntimeException(e);
+            return printUnauthenticated();
         }
     }
 
@@ -49,8 +53,8 @@ public class PostJoinClient {
                 result.append(parseGameData(game));
             }
             return result.toString();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (Unauthorized e) {
+            return printUnauthenticated();
         }
     }
 
@@ -62,11 +66,14 @@ public class PostJoinClient {
                     return help();
                 }
                 server.joinGame(id, command[2].toUpperCase(), auth.authToken());
+                System.out.println(printGame(new ChessGame(), command[2].toLowerCase()));
                 return SET_TEXT_COLOR_BLUE + "joining game " + id + "..." + RESET_TEXT_COLOR;
             }
             return help();
         } catch (Unauthorized e) {
-            throw new RuntimeException(e);
+           return printUnauthenticated();
+        } catch (AlreadyTaken e) {
+            return SET_TEXT_COLOR_RED + "That team is already taken in that game. Join as a different color or join a different game" + RESET_TEXT_COLOR;
         }
     }
 
@@ -98,5 +105,14 @@ public class PostJoinClient {
 
     private void printListHeaders() {
         System.out.println("\tID\t\tGAME NAME\t\tBLACK USERNAME\t\t\tWHITE USERNAME");
+    }
+
+    private String printUnauthenticated() {
+        System.out.println(SET_TEXT_COLOR_RED + "There was an error authenticating you with the server\n Please log in.\nThe app will close now.");
+        return "quit";
+    }
+
+    private String printGame(chess.ChessGame game, String team) {
+        return BoardPrinter.printBoard(game, team);
     }
 }
