@@ -10,8 +10,4 @@ public record ListGameRequest(String authToken) implements RecordRequest {
         return true;
     }
 
-    @Override
-    public boolean hasBody() {
-        return false;
-    }
 }

@@ -11,8 +11,4 @@ public record LoginRequest(String username, String password) implements RecordRe
         return false;
     }
 
-    @Override
-    public boolean hasBody() {
-        return true;
-    }
 }

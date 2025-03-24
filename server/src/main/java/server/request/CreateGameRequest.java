@@ -11,9 +11,4 @@ public record CreateGameRequest(String authToken, String gameName) implements Re
     public boolean requiresAuth() {
         return true;
     }
-
-    @Override
-    public boolean hasBody() {
-        return true;
-    }
 }

@@ -10,9 +10,4 @@ public record ClearRequest() implements RecordRequest {
     public boolean requiresAuth() {
         return false;
     }
-
-    @Override
-    public boolean hasBody() {
-        return false;
-    }
 }

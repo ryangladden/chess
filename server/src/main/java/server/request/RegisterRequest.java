@@ -7,11 +7,6 @@ public record RegisterRequest(String username, String password, String email) im
     }
 
     @Override
-    public boolean hasBody() {
-        return true;
-    }
-
-    @Override
     public boolean requiresAuth() {
         return false;
     }

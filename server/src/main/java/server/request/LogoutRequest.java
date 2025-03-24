@@ -7,11 +7,6 @@ public record LogoutRequest(String authToken) implements RecordRequest {
     }
 
     @Override
-    public boolean hasBody() {
-        return false;
-    }
-
-    @Override
     public boolean requiresAuth() {
         return true;
     }

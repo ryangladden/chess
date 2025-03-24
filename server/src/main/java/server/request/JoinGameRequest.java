@@ -11,9 +11,4 @@ public record JoinGameRequest(String playerColor, int gameID, String authToken) 
     public boolean requiresAuth() {
         return true;
     }
-
-    @Override
-    public boolean hasBody() {
-        return true;
-    }
 }
