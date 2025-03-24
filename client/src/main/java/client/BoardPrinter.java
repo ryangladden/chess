@@ -8,12 +8,12 @@ import static ui.EscapeSequences.*;
 
 public class BoardPrinter {
 
-    private static final String[] colHeaders = {" a ", " b ", " c ", " d ", " e ", " f ", " g ", " h "};
-    private static final String[] oddRows = {SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE,
+    private static final String[] COL_HEADERS = {" a ", " b ", " c ", " d ", " e ", " f ", " g ", " h "};
+    private static final String[] ODD_ROWS = {SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE,
             SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE +
             SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK,
             SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE};
-    private static final String[] evenRows = {SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK,
+    private static final String[] EVEN_ROWS = {SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK,
             SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK +
             SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE,
             SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK};
@@ -30,9 +30,9 @@ public class BoardPrinter {
             for (int j = 7; j >= 0; j--) {
                 ChessPiece piece = board.getPiece(i + 1, 7 - j + 1);
                 if (i % 2 == 1) {
-                    string.append(oddRows[7 - j]).append(piece == null ? EMPTY : piece);
+                    string.append(ODD_ROWS[7 - j]).append(piece == null ? EMPTY : piece);
                 } else {
-                    string.append(evenRows[7 - j]).append(piece == null ? EMPTY : piece);
+                    string.append(EVEN_ROWS[7 - j]).append(piece == null ? EMPTY : piece);
                 }
             }
             string.append(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_WHITE + " ").append(i + 1).append(" ").append(RESET_BG_COLOR).append("\n");
@@ -49,9 +49,9 @@ public class BoardPrinter {
             for (int j = 0; j <= 7; j++) {
                 ChessPiece piece = board.getPiece(i + 1, j + 1);
                 if (i % 2 == 1) {
-                    string.append(oddRows[7 - j]).append(piece == null ? EMPTY : piece);
+                    string.append(ODD_ROWS[7 - j]).append(piece == null ? EMPTY : piece);
                 } else {
-                    string.append(evenRows[7 - j]).append(piece == null ? EMPTY : piece);
+                    string.append(EVEN_ROWS[7 - j]).append(piece == null ? EMPTY : piece);
                 }
             }
             string.append(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_WHITE + " ").append(i + 1).append(" ").append(RESET_BG_COLOR).append("\n");
@@ -65,12 +65,12 @@ public class BoardPrinter {
         switch (teamColor) {
             case "white":
                 for (int i = 7; i >= 0; i--) {
-                    string.append(colHeaders[i]);
+                    string.append(COL_HEADERS[i]);
                 }
                 break;
             case "black":
                 for (int i = 0; i <= 7; i++) {
-                    string.append(colHeaders[i]);
+                    string.append(COL_HEADERS[i]);
                 }
         }
         string.append("   " + RESET_BG_COLOR + "\n");
