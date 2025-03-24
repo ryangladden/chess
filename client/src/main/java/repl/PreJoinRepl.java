@@ -39,7 +39,8 @@ public class PreJoinRepl {
     }
 
     private void printWelcome() {
-        System.out.println("\n\n\n" + SET_TEXT_BOLD + BLACK_ROOK + " Chess " + BLACK_ROOK + RESET_TEXT_BOLD_FAINT + SET_TEXT_FAINT + "  v0.1" + RESET_TEXT_BOLD_FAINT);
+        System.out.println("\n\n\n" + SET_TEXT_BOLD + BLACK_ROOK + " Chess " + BLACK_ROOK +
+                RESET_TEXT_BOLD_FAINT + SET_TEXT_FAINT + "  v0.1" + RESET_TEXT_BOLD_FAINT);
         System.out.println("Sign in or register to get started");
     }
 
@@ -49,7 +50,8 @@ public class PreJoinRepl {
 
     private String printConnectionError() {
         System.out.println(SET_TEXT_COLOR_RED + "Uh oh! There was an issue connecting to the server\n"
-                + RESET_TEXT_COLOR + "Check your internet connection and try again.\nIf the problem persists, the server may be down and you should try again later.");
+                + RESET_TEXT_COLOR + "Check your internet connection and try again." +
+                "\nIf the problem persists, the server may be down and you should try again later.");
         return "quit";
     }
 

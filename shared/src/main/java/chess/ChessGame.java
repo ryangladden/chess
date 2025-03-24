@@ -15,19 +15,11 @@ public class ChessGame implements Cloneable {
 
     private TeamColor teamTurn;
     private ChessBoard board;
-//    private boolean whiteCanCastle1;
-//    private boolean whiteCanCastle8;
-//    private boolean blackCanCastle1;
-//    private boolean blackCanCastle8;
 
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
         this.board.resetBoard();
-//        this.whiteCanCastle1 = true;
-//        this.whiteCanCastle8 = true;
-//        this.blackCanCastle1 = true;
-//        this.blackCanCastle8 = true;
     }
 
     /**
@@ -66,7 +58,6 @@ public class ChessGame implements Cloneable {
 
             clone.board.addPiece(move.getEndPosition(), clone.board.getPiece(move.getStartPosition()));
             clone.board.addPiece(move.getStartPosition(), null);
-//                clone.makeMove(move);
             var color = piece.getTeamColor();
             if (!clone.isInCheck(color) && !clone.isInCheckmate(color) && !clone.isInStalemate(color)) {
                 validMoves.add(move);
@@ -107,7 +98,10 @@ public class ChessGame implements Cloneable {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        Collection<ChessPosition> otherPositions = (teamColor == TeamColor.BLACK) ? getPiecePositions(TeamColor.WHITE) : getPiecePositions(TeamColor.BLACK);
+        Collection<ChessPosition> otherPositions =
+                (teamColor == TeamColor.BLACK) ?
+                        getPiecePositions(TeamColor.WHITE) :
+                        getPiecePositions(TeamColor.BLACK);
         ChessPosition kingPos = getKing(teamColor);
         if (kingPos == null) {
             return false;
@@ -159,7 +153,6 @@ public class ChessGame implements Cloneable {
         for (var pos : getPiecePositions(teamColor)) {
             for (var move : board.getPiece(pos).pieceMoves(board, pos)) {
                 ChessGame clone = this.clone();
-//                    clone.makeMove(move);
                 clone.board.addPiece(move.getEndPosition(), clone.board.getPiece(move.getStartPosition()));
                 clone.board.addPiece(move.getStartPosition(), null);
                 if (!clone.isInCheck(teamColor)) {
@@ -182,86 +175,6 @@ public class ChessGame implements Cloneable {
     public ChessBoard getBoard() {
         return this.board;
     }
-
-//    public Collection<ChessMove> getCastlingMoves(TeamColor teamColor) {
-//        Collection<ChessMove> castling = new ArrayList<>();
-//        if (getCanCastle(teamColor, 1)) {
-//            boolean canCastle = true;
-//            Collection<ChessPosition> pieces = getPiecePositions();
-//            var kingPos = getKing(teamColor);
-//            int kingColumn = kingPos.getColumn();
-//            int kingRow = kingPos.getRow();
-//            for (int i = 1; i < kingColumn; i++) {
-//                ChessPosition testSquare = new ChessPosition(i, kingRow);
-//                if (pieces.contains(testSquare)) {
-//                    canCastle = false;
-//                    break;
-//                }
-//            }
-//            }
-//        return true;
-//    }
-
-//    private void setCanCastle(TeamColor teamColor, int side) {
-//        switch(teamColor) {
-//            case WHITE:
-//                switch(side) {
-//                    case 1:
-//                        whiteCanCastle1 = false;
-//                        break;
-//                    case 8:
-//                        whiteCanCastle8 = false;
-//                }
-//                break;
-//            case BLACK:
-//                switch(side) {
-//                    case 1:
-//                        blackCanCastle1 = false;
-//                        break;
-//                    case 8:
-//                        blackCanCastle8 = false;
-//                }
-//                break;
-//        }
-//    }
-
-//    private void setCanCastle(TeamColor teamColor) {
-//        switch(teamColor) {
-//            case WHITE:
-//                whiteCanCastle8 = false;
-//                whiteCanCastle1 = false;
-//                break;
-//            case BLACK:
-//                blackCanCastle8 = false;
-//                blackCanCastle1 = false;
-//                break;
-//        }
-//    }
-
-//    private boolean getCanCastle(TeamColor teamColor, int side) {
-//        boolean canCastle = false;
-//        switch(teamColor) {
-//            case WHITE:
-//                switch(side) {
-//                    case 1:
-//                        canCastle = whiteCanCastle1;
-//                        break;
-//                    case 8:
-//                        canCastle = whiteCanCastle8;
-//                }
-//                break;
-//            case BLACK:
-//                switch(side) {
-//                    case 1:
-//                        canCastle = blackCanCastle1;
-//                        break;
-//                    case 8:
-//                        canCastle = blackCanCastle8;
-//                }
-//                break;
-//        }
-//        return canCastle;
-//    }
 
     /**
      * Sets this game's chessboard with a given board
@@ -287,7 +200,6 @@ public class ChessGame implements Cloneable {
     public Collection<ChessPosition> getPiecePositions(TeamColor teamColor) {
         Collection<ChessPosition> pieces = getPiecePositions();
         Collection<ChessPosition> teamPieces = new ArrayList<>();
-//        pieces.removeIf(pos -> board.getPiece(pos).getTeamColor() != teamColor);
         for (ChessPosition pos : pieces) {
             if (board.getPiece(pos).getTeamColor() == teamColor) {
                 teamPieces.add(pos);
@@ -314,10 +226,6 @@ public class ChessGame implements Cloneable {
         }
         return piecesFound;
     }
-
-//    public Collection<ChessPosition> getRooks(TeamColor teamColor) {
-//        return getPiece(teamColor, ROOK);
-//    }
 
     @Override
     public ChessGame clone() {

@@ -50,7 +50,6 @@ public class ChessPiece implements Cloneable {
     public ChessPiece clone() {
         try {
             ChessPiece clone = (ChessPiece) super.clone();
-            // TODO: copy mutable state here, so the clone can't change the internals of the original
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
@@ -116,9 +115,6 @@ public class ChessPiece implements Cloneable {
         return rep;
     }
 
-    /**
-     * The various different chess piece options
-     */
     public enum PieceType {
         KING,
         QUEEN,

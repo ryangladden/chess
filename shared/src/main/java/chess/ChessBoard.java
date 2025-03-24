@@ -103,13 +103,6 @@ public class ChessBoard implements Cloneable {
         addPiece(new ChessPosition(8, 5), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
     }
 
-    public void setSquares(ChessMove move, ChessPiece piece) {
-        ChessPosition start = move.getStartPosition();
-        ChessPosition end = move.getEndPosition();
-        squares[end.getRow() - 1][end.getColumn() - 1] = piece;
-        squares[start.getRow() - 1][start.getColumn() - 1] = null;
-    }
-
 
     @Override
     public ChessBoard clone() {
@@ -126,7 +119,6 @@ public class ChessBoard implements Cloneable {
             }
             clone.squares = squares;
             return clone;
-            // TODO: copy mutable state here, so the clone can't change the internals of the original
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }

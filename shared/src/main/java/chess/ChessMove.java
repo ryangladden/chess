@@ -42,10 +42,6 @@ public class ChessMove {
     @Override
     public boolean equals(Object obj) {
         ChessMove other = (ChessMove) obj;
-//        return (other.getStartPosition() == this.getStartPosition()
-//                && other.getEndPosition() == this.getEndPosition()
-//                && this.getPromotionPiece() == other.getPromotionPiece()
-//        );
         if (other.getPromotionPiece() == null && this.getPromotionPiece() == null) {
             return other.getStartPosition().hashCode() == this.getStartPosition().hashCode()
                     && this.getEndPosition().hashCode() == other.getEndPosition().hashCode();

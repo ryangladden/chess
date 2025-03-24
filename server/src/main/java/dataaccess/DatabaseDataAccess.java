@@ -18,7 +18,7 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 public class DatabaseDataAccess extends DataAccess {
 
 
-    private static final String[] initialStatements = {
+    private static final String[] CREATE_TABLES = {
             """
             CREATE TABLE IF NOT EXISTS users (
             `id` int NOT NULL AUTO_INCREMENT,
@@ -60,7 +60,7 @@ public class DatabaseDataAccess extends DataAccess {
         DatabaseManager.createDatabase();
 
         try (var conn = DatabaseManager.getConnection()) {
-            for (String statement : initialStatements) {
+            for (String statement : CREATE_TABLES) {
                 try (var stmt = conn.prepareStatement(statement)) {
                     stmt.executeUpdate();
                 }

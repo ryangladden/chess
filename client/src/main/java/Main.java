@@ -4,15 +4,15 @@ import repl.PreJoinRepl;
 import server.ServerFacade;
 
 public class Main {
-    static final ServerFacade server = new ServerFacade(8080);
+    static final ServerFacade SERVER = new ServerFacade(8080);
 
     public static void main(String[] args) {
         boolean cont = true;
         while (cont) {
-            PreJoinRepl preJoin = new PreJoinRepl(server);
+            PreJoinRepl preJoin = new PreJoinRepl(SERVER);
             AuthData auth = preJoin.run();
             if (auth != null) {
-                PostJoinRepl postJoin = new PostJoinRepl(server, auth);
+                PostJoinRepl postJoin = new PostJoinRepl(SERVER, auth);
                 cont = postJoin.run();
             } else {
                 break;
