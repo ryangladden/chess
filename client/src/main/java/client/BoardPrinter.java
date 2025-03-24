@@ -28,12 +28,7 @@ public class BoardPrinter {
         for (int i = 7; i >= 0; i--) {
             string.append(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_WHITE + " ").append(i + 1).append(" ");
             for (int j = 7; j >= 0; j--) {
-                ChessPiece piece = board.getPiece(i + 1, 7 - j + 1);
-                if (i % 2 == 1) {
-                    string.append(ODD_ROWS[7 - j]).append(piece == null ? EMPTY : piece);
-                } else {
-                    string.append(EVEN_ROWS[7 - j]).append(piece == null ? EMPTY : piece);
-                }
+                string.append(printGrid(board, i, j));
             }
             string.append(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_WHITE + " ").append(i + 1).append(" ").append(RESET_BG_COLOR).append("\n");
         }
@@ -47,12 +42,7 @@ public class BoardPrinter {
         for (int i = 0; i <= 7; i++) {
             string.append(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_WHITE + " ").append(i + 1).append(" ");
             for (int j = 0; j <= 7; j++) {
-                ChessPiece piece = board.getPiece(i + 1, 7 - j + 1);
-                if (i % 2 == 1) {
-                    string.append(ODD_ROWS[7 - j]).append(piece == null ? EMPTY : piece);
-                } else {
-                    string.append(EVEN_ROWS[7 - j]).append(piece == null ? EMPTY : piece);
-                }
+                string.append(printGrid(board, i, j));
             }
             string.append(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_WHITE + " ").append(i + 1).append(" ").append(RESET_BG_COLOR).append("\n");
         }
@@ -74,6 +64,17 @@ public class BoardPrinter {
                 }
         }
         string.append("   " + RESET_BG_COLOR + "\n");
+        return string.toString();
+    }
+
+    private static String printGrid(ChessBoard board, int i, int j) {
+        StringBuilder string = new StringBuilder();
+        ChessPiece piece = board.getPiece(i + 1, 7 - j + 1);
+        if (i % 2 == 1) {
+            string.append(ODD_ROWS[7 - j]).append(piece == null ? EMPTY : piece);
+        } else {
+            string.append(EVEN_ROWS[7 - j]).append(piece == null ? EMPTY : piece);
+        }
         return string.toString();
     }
 }
