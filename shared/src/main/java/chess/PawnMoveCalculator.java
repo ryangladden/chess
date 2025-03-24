@@ -13,8 +13,8 @@ public class PawnMoveCalculator implements PieceMoveCalculator {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> possibilities = new ArrayList<>();
         int direction = invert(board.getPiece(myPosition));
-        if (isValidMove(board, myPosition, myPosition.getRow() + 1 * direction, myPosition.getColumn())) {
-            ChessMove forward = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1 * direction, myPosition.getColumn()));
+        if (isValidMove(board, myPosition, myPosition.getRow() + direction, myPosition.getColumn())) {
+            ChessMove forward = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()));
             if (!isCapture(board, forward)) {
                 if (isPromoted(forward)) {
                     possibilities.add(new ChessMove(forward.getStartPosition(), forward.getEndPosition(), ChessPiece.PieceType.BISHOP));
@@ -33,8 +33,8 @@ public class PawnMoveCalculator implements PieceMoveCalculator {
             }
         }
 //        ChessMove forward = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1 * direction, myPosition.getColumn()));
-        if (isValidMove(board, myPosition, myPosition.getRow() + 1 * direction, myPosition.getColumn() + 1)) {
-            ChessMove right = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1 * direction, myPosition.getColumn() + 1));
+        if (isValidMove(board, myPosition, myPosition.getRow() + direction, myPosition.getColumn() + 1)) {
+            ChessMove right = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + 1));
             if (isCapture(board, right)) {
                 if (isPromoted(right)) {
                     possibilities.add(new ChessMove(right.getStartPosition(), right.getEndPosition(), ChessPiece.PieceType.BISHOP));
@@ -46,8 +46,8 @@ public class PawnMoveCalculator implements PieceMoveCalculator {
                 }
             }
         }
-        if (isValidMove(board, myPosition, myPosition.getRow() + 1 * direction, myPosition.getColumn() - 1)) {
-            ChessMove left = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1 * direction, myPosition.getColumn() - 1));
+        if (isValidMove(board, myPosition, myPosition.getRow() + direction, myPosition.getColumn() - 1)) {
+            ChessMove left = new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() - 1));
             if (isCapture(board, left)) {
                 if (isPromoted(left)) {
                     possibilities.add(new ChessMove(left.getStartPosition(), left.getEndPosition(), ChessPiece.PieceType.BISHOP));
@@ -71,8 +71,7 @@ public class PawnMoveCalculator implements PieceMoveCalculator {
 
     private boolean isStarting(ChessPiece piece, ChessPosition myPosition) {
         if (piece.getTeamColor() == BLACK && myPosition.getRow() == 7) {return true;}
-        else if (piece.getTeamColor() == WHITE && myPosition.getRow() == 2) {return true;}
-        return false;
+        else return piece.getTeamColor() == WHITE && myPosition.getRow() == 2;
     }
 
     private boolean isPromoted(ChessMove move) {

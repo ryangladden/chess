@@ -13,7 +13,7 @@ import spark.Response;
 
 public class RegisterHandler implements Handler {
 
-    private UserService service;
+    private final UserService service;
 
     public RegisterHandler(UserService service) {
         this.service = service;

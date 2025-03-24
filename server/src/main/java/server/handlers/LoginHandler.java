@@ -11,7 +11,7 @@ import spark.Response;
 
 public class LoginHandler implements Handler {
 
-    private UserService service;
+    private final UserService service;
 
     public LoginHandler(UserService service) {
         this.service = service;

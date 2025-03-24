@@ -2,7 +2,10 @@ package client;
 
 import model.AuthData;
 import model.UserData;
-import server.*;
+import server.AlreadyTaken;
+import server.ServerFacade;
+import server.Unauthorized;
+
 import static ui.EscapeSequences.*;
 
 public class PreJoinClient {
@@ -17,7 +20,7 @@ public class PreJoinClient {
 
     public String eval(String input) {
         String[] command = input.toLowerCase().split(" ");
-        return switch(command[0]) {
+        return switch (command[0]) {
             case "login" -> login(command);
             case "register" -> register(command);
             case "help" -> help();

@@ -8,9 +8,9 @@ import static ui.EscapeSequences.*;
 
 public class BoardPrinter {
 
-    private static String[] colHeaders = {" a ", " b ", " c ", " d ", " e ", " f ", " g ", " h "};
-    private static String[] oddRows = {SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE};
-    private static String[] evenRows = {SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK};
+    private static final String[] colHeaders = {" a ", " b ", " c ", " d ", " e ", " f ", " g ", " h "};
+    private static final String[] oddRows = {SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE};
+    private static final String[] evenRows = {SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK, SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE, SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK};
 
     public static String printBoard(ChessGame game, String teamColor) {
         return teamColor.equals("black") ? printBlack(game) : printWhite(game);
@@ -56,7 +56,7 @@ public class BoardPrinter {
 
     private static String printHeaders(String teamColor) {
         StringBuilder string = new StringBuilder(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_WHITE + "   ");
-        switch(teamColor) {
+        switch (teamColor) {
             case "white":
                 for (int i = 7; i >= 0; i--) {
                     string.append(colHeaders[i]);
@@ -66,7 +66,7 @@ public class BoardPrinter {
                 for (int i = 0; i <= 7; i++) {
                     string.append(colHeaders[i]);
                 }
-            }
+        }
         string.append("   " + RESET_BG_COLOR + "\n");
         return string.toString();
     }

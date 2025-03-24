@@ -1,12 +1,13 @@
 package repl;
 
+import client.PreJoinClient;
 import model.AuthData;
 import server.ServerConnectionError;
 import server.ServerFacade;
-import static ui.EscapeSequences.*;
-import client.PreJoinClient;
 
 import java.util.Scanner;
+
+import static ui.EscapeSequences.*;
 
 public class PreJoinRepl {
 
@@ -29,7 +30,7 @@ public class PreJoinRepl {
             try {
                 result = client.eval(input);
                 printResult(result);
-            } catch(ServerConnectionError e) {
+            } catch (ServerConnectionError e) {
                 result = printConnectionError();
             }
             auth = client.auth;
@@ -48,7 +49,7 @@ public class PreJoinRepl {
 
     private String printConnectionError() {
         System.out.println(SET_TEXT_COLOR_RED + "Uh oh! There was an issue connecting to the server\n"
-                + RESET_TEXT_COLOR + "Check your internet connection and try again.\nIf the problem persists, the server may be down and you should try again later." );
+                + RESET_TEXT_COLOR + "Check your internet connection and try again.\nIf the problem persists, the server may be down and you should try again later.");
         return "quit";
     }
 

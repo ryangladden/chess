@@ -10,7 +10,7 @@ import spark.Response;
 
 public class ListGamesHandler implements Handler {
 
-    private GameService service;
+    private final GameService service;
 
     public ListGamesHandler(GameService service) {
         this.service = service;

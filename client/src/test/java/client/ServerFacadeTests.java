@@ -9,8 +9,8 @@ import server.*;
 
 public class ServerFacadeTests {
 
-    private static Server server;
     static ServerFacade facade;
+    private static Server server;
     private UserData user;
     private AuthData auth;
 
@@ -23,6 +23,11 @@ public class ServerFacadeTests {
         facade.clear();
     }
 
+    @AfterAll
+    static void stopServer() {
+        server.stop();
+    }
+
     @AfterEach
     public void cleanUp() {
         facade.clear();
@@ -33,12 +38,6 @@ public class ServerFacadeTests {
         user = new UserData("josephmama", "password", "joseph@gmail.com");
         auth = facade.register(user);
     }
-
-    @AfterAll
-    static void stopServer() {
-        server.stop();
-    }
-
 
     @Test
     public void sampleTest() {

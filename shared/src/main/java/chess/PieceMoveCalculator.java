@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public interface PieceMoveCalculator {
 
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
+    Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
 
     default boolean isValidMove(ChessBoard board, ChessPosition position, int row, int col) {
 //        if ((newRow < 1 || newRow > 8 || newColumn < 1 || newColumn > 8)) {
@@ -41,7 +41,7 @@ public interface PieceMoveCalculator {
                     break;
                 }
             }
-            else {break;};
+            else {break;}
         }
         for (int i = 1; i < 8; i++) {
             if (isValidMove(board,myPosition, myPosition.getRow() - i, myPosition.getColumn())) {
@@ -51,7 +51,7 @@ public interface PieceMoveCalculator {
                     break;
                 }
             }
-            else {break;};
+            else {break;}
         }
         for (int i = 1; i < 8; i++) {
             if (isValidMove(board,myPosition, myPosition.getRow(), myPosition.getColumn() + i)) {
@@ -61,7 +61,7 @@ public interface PieceMoveCalculator {
                     break;
                 }
             }
-            else {break;};
+            else {break;}
         }
         for (int i = 1; i < 8; i++) {
             if (isValidMove(board,myPosition, myPosition.getRow(), myPosition.getColumn() - i)) {
@@ -71,7 +71,7 @@ public interface PieceMoveCalculator {
                     break;
                 }
             }
-            else {break;};
+            else {break;}
         }
         return possibilities;
     }
@@ -86,7 +86,7 @@ public interface PieceMoveCalculator {
                     break;
                 }
             }
-            else {break;};
+            else {break;}
         }
         for (int i = 1; i < 8; i++) {
             if (isValidMove(board,myPosition, myPosition.getRow() - i, myPosition.getColumn() + i)) {
@@ -96,7 +96,7 @@ public interface PieceMoveCalculator {
                     break;
                 }
             }
-            else {break;};
+            else {break;}
         }
         for (int i = 1; i < 8; i++) {
             if (isValidMove(board,myPosition, myPosition.getRow() + i, myPosition.getColumn() - i)) {
@@ -106,7 +106,7 @@ public interface PieceMoveCalculator {
                     break;
                 }
             }
-            else {break;};
+            else {break;}
         }
         for (int i = 1; i < 8; i++) {
             if (isValidMove(board,myPosition, myPosition.getRow() - i, myPosition.getColumn() - i)) {
@@ -116,7 +116,7 @@ public interface PieceMoveCalculator {
                     break;
                 }
             }
-            else {break;};
+            else {break;}
         }
         return possibilities;
     }

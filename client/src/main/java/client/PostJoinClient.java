@@ -7,19 +7,20 @@ import server.AlreadyTaken;
 import server.InvalidCommand;
 import server.ServerFacade;
 import server.Unauthorized;
+
 import static ui.EscapeSequences.*;
 
 public class PostJoinClient {
 
     private final ServerFacade server;
     private final AuthData auth;
+    private final boolean gamesExist;
     private int idStart;
-    private boolean gamesExist;
 
     public PostJoinClient(ServerFacade server, AuthData auth) {
         this.server = server;
         this.auth = auth;
-        GameData[] games =  server.listGames(auth.authToken());
+        GameData[] games = server.listGames(auth.authToken());
         if (games.length == 0) {
             gamesExist = false;
             idStart = 0;
@@ -31,7 +32,7 @@ public class PostJoinClient {
 
     public String eval(String input) {
         String[] command = input.toLowerCase().split(" ");
-        return switch(command[0]) {
+        return switch (command[0]) {
             case "create" -> createGame(command);
             case "list" -> listGames();
             case "join" -> joinGame(command);
@@ -87,7 +88,7 @@ public class PostJoinClient {
             }
             return help();
         } catch (Unauthorized e) {
-           return printUnauthenticated();
+            return printUnauthenticated();
         } catch (AlreadyTaken e) {
             return SET_TEXT_COLOR_RED + "That team is already taken in that game. Join as a different color or join a different game." + RESET_TEXT_COLOR;
         } catch (InvalidCommand e) {

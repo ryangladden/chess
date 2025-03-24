@@ -2,7 +2,6 @@ package repl;
 
 import client.PostJoinClient;
 import model.AuthData;
-import server.ServerConnectionError;
 import server.ServerFacade;
 
 import java.util.Scanner;

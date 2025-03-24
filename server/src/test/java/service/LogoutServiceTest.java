@@ -47,7 +47,7 @@ public class LogoutServiceTest {
     }
 
     @Test
-    public void loginAndLogout() throws UnauthorizedException, DataAccessException {
+    public void loginAndLogout() throws DataAccessException {
         LoginRequest login = new LoginRequest(username, password);
         String authToken = service.login(login).authData().authToken();
 
