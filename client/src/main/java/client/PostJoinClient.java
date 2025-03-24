@@ -120,6 +120,8 @@ public class PostJoinClient {
                 SET_TEXT_BOLD +
                 "   create <game name>                          " + RESET_TEXT_BOLD_FAINT + "Create a new game with specified name\n" +
                 SET_TEXT_BOLD +
+                "   logout                                      " + RESET_TEXT_BOLD_FAINT + "Log out and return to login cli\n" +
+                SET_TEXT_BOLD +
                 "   help                                        " + RESET_TEXT_BOLD_FAINT + "Show these options\n" +
                 SET_TEXT_BOLD +
                 "   quit                                        " + RESET_TEXT_BOLD_FAINT + "Quit";
