@@ -47,7 +47,7 @@ public class BoardPrinter {
         for (int i = 0; i <= 7; i++) {
             string.append(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_WHITE + " ").append(i + 1).append(" ");
             for (int j = 0; j <= 7; j++) {
-                ChessPiece piece = board.getPiece(i + 1, j + 1);
+                ChessPiece piece = board.getPiece(i + 1, 7 - j + 1);
                 if (i % 2 == 1) {
                     string.append(ODD_ROWS[7 - j]).append(piece == null ? EMPTY : piece);
                 } else {

@@ -38,6 +38,7 @@ public class PostJoinClient {
             case "join" -> joinGame(command);
             case "logout" -> logout();
             case "quit" -> quit();
+            case "watch" -> watch(command);
             default -> help();
         };
     }
@@ -88,7 +89,7 @@ public class PostJoinClient {
                 server.joinGame(id + idStart - 1, command[2].toUpperCase(), auth.authToken());
                 System.out.println(SET_TEXT_COLOR_BLUE + "joining game " + id + "..." + RESET_TEXT_COLOR);
                 System.out.println(printGame(new ChessGame(), command[2].toLowerCase()));
-                return "quit";
+                return "okay";
             }
             return help();
         } catch (Unauthorized e) {
@@ -142,5 +143,9 @@ public class PostJoinClient {
 
     private String logout() {
         return "logout";
+    }
+
+    private String watch(String[] command) {
+        return printGame(new ChessGame(), "white");
     }
 }
