@@ -1,7 +1,9 @@
 package service;
 
 
-import dataaccess.*;
+import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
+import dataaccess.UnauthorizedException;
 import model.AuthData;
 import model.UserData;
 import server.request.LoginRequest;
@@ -43,7 +45,7 @@ public class UserService extends Service {
         return login(new LoginRequest(req.username(), req.password()));
     }
 
-    private AuthData createAuth(UserData userData) throws DataAccessException{
+    private AuthData createAuth(UserData userData) throws DataAccessException {
         AuthData authData = new AuthData(UUID.randomUUID().toString(), userData.username());
         memoryData.createAuth(authData);
         return authData;

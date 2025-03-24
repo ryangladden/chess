@@ -1,6 +1,9 @@
 package service;
 
-import dataaccess.*;
+import dataaccess.ColorTakenException;
+import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
+import dataaccess.InvalidGameID;
 import model.GameData;
 import model.UserData;
 import server.InvalidRequest;

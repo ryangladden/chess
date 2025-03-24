@@ -3,6 +3,7 @@ package dataaccess;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 import server.InvalidRequest;
 
 import java.sql.Connection;
@@ -11,19 +12,62 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import org.mindrot.jbcrypt.BCrypt;
-
-import javax.xml.crypto.Data;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class DatabaseDataAccess extends DataAccess {
 
 
+    private static final String[] initialStatements = {
+            """
+            CREATE TABLE IF NOT EXISTS users (
+            `id` int NOT NULL AUTO_INCREMENT,
+            `username` VARCHAR(256) NOT NULL,
+            `password` VARCHAR(256) NOT NULL,
+            `email` VARCHAR(256) NOT NULL,
+            PRIMARY KEY (`id`),
+            INDEX (`username`)
+            );
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS auth (
+            `user_id` int NOT NULL,
+            `token` CHAR(36) NOT NULL,
+            PRIMARY KEY (`token`),
+            FOREIGN KEY (`user_id`) REFERENCES users(`id`)
+            );
+            """,
+            """
+            
+            CREATE TABLE IF NOT EXISTS games (
+            `id` int NOT NULL AUTO_INCREMENT,
+            `name` VARCHAR(256) NOT NULL,
+            `white` int DEFAULT NULL,
+            `black` int DEFAULT NULL,
+            `game` TEXT DEFAULT NULL,
+            PRIMARY KEY(`id`),
+            FOREIGN KEY (`white`) REFERENCES users(`id`) ON DELETE SET NULL,
+            FOREIGN KEY (`black`) REFERENCES users(`id`) ON DELETE SET NULL
+            );
+            """
+    };
+
     public DatabaseDataAccess() throws DataAccessException {
-            createDatabase();
+        createDatabase();
+    }
+
+    private static void createDatabase() throws DataAccessException {
+        DatabaseManager.createDatabase();
+
+        try (var conn = DatabaseManager.getConnection()) {
+            for (String statement : initialStatements) {
+                try (var stmt = conn.prepareStatement(statement)) {
+                    stmt.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Error: database could not be initialized");
+        }
     }
 
     @Override
@@ -237,53 +281,6 @@ public class DatabaseDataAccess extends DataAccess {
             }
         } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-        private static final String[] initialStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS users (
-            `id` int NOT NULL AUTO_INCREMENT,
-            `username` VARCHAR(256) NOT NULL,
-            `password` VARCHAR(256) NOT NULL,
-            `email` VARCHAR(256) NOT NULL,
-            PRIMARY KEY (`id`),
-            INDEX (`username`)
-            );
-            """,
-            """
-            CREATE TABLE IF NOT EXISTS auth (
-            `user_id` int NOT NULL,
-            `token` CHAR(36) NOT NULL,
-            PRIMARY KEY (`token`),
-            FOREIGN KEY (`user_id`) REFERENCES users(`id`)
-            );
-            """,
-            """
-            
-            CREATE TABLE IF NOT EXISTS games (
-            `id` int NOT NULL AUTO_INCREMENT,
-            `name` VARCHAR(256) NOT NULL,
-            `white` int DEFAULT NULL,
-            `black` int DEFAULT NULL,
-            `game` TEXT DEFAULT NULL,
-            PRIMARY KEY(`id`),
-            FOREIGN KEY (`white`) REFERENCES users(`id`) ON DELETE SET NULL,
-            FOREIGN KEY (`black`) REFERENCES users(`id`) ON DELETE SET NULL
-            );
-            """
-    };
-
-    private static void createDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-
-        try (var conn = DatabaseManager.getConnection()) {
-            for (String statement : initialStatements)
-                try (var stmt = conn.prepareStatement(statement)) {
-                    stmt.executeUpdate();
-                }
-        } catch (SQLException e) {
-            throw new DataAccessException("Error: database could not be initialized");
         }
     }
 

@@ -1,12 +1,9 @@
 package dataaccess;
 
-import model.AuthData;
 import model.GameData;
 import model.UserData;
-import server.Server;
 
 import java.util.Collection;
-import java.util.UUID;
 
 public class Main {
     public static void main(String[] args) {

@@ -5,7 +5,6 @@ import model.GameData;
 import model.UserData;
 import server.InvalidRequest;
 
-import javax.xml.crypto.Data;
 import java.util.Collection;
 
 public abstract class DataAccess {

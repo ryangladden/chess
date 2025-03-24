@@ -15,7 +15,7 @@ public class JoinGameDatabaseTest {
     String team;
 
     @BeforeEach
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         dataAccess = new DatabaseDataAccess();
         user = new UserData("brand", "PaSSworD", "email@email.com");
         dataAccess.createUser(user);
@@ -31,7 +31,7 @@ public class JoinGameDatabaseTest {
 
     @Test
     @DisplayName("Join new game as Black")
-    public void joinGame() throws Exception{
+    public void joinGame() throws Exception {
         dataAccess.joinGame(user, gameId, team);
 
         ResultSet gameQuery = TestUtilities.queryDatabase("SELECT * FROM games WHERE id = " + gameId + ";");

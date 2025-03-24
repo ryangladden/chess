@@ -1,9 +1,11 @@
 package dataaccess;
 
 import model.AuthData;
-import model.GameData;
 import model.UserData;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.sql.ResultSet;
 import java.util.UUID;

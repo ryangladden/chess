@@ -4,7 +4,6 @@ import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 

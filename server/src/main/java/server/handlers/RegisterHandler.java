@@ -2,7 +2,6 @@ package server.handlers;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import dataaccess.UnauthorizedException;
 import dataaccess.UserExistsException;
 import server.InvalidRequest;
 import server.request.RegisterRequest;

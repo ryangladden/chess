@@ -5,7 +5,7 @@ public class Main {
         try {
             Server server = new Server();
             server.run(8080);
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }

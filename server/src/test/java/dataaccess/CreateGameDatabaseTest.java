@@ -10,7 +10,7 @@ public class CreateGameDatabaseTest {
     String gameName;
 
     @BeforeEach
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         dataAccess = new DatabaseDataAccess();
         gameName = "wowie cool new chess game here";
     }

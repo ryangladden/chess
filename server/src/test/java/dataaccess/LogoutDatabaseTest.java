@@ -28,7 +28,7 @@ public class LogoutDatabaseTest {
 
     @Test
     @DisplayName("Remove auth token")
-    public void removeAuthToken() throws Exception{
+    public void removeAuthToken() throws Exception {
         dataAccess.removeAuthToken(auth.authToken());
 
         ResultSet query = TestUtilities.queryDatabase("SELECT * FROM auth WHERE token = '" + auth.authToken() + "';");

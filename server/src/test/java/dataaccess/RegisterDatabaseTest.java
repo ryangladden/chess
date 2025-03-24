@@ -5,7 +5,6 @@ import org.junit.jupiter.api.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class RegisterDatabaseTest {
 
