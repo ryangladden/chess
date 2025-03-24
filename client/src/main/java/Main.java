@@ -10,11 +10,17 @@ import server.ServerFacade;
 public class Main {
     static final ServerFacade server = new ServerFacade("http://localhost:8080");
     public static void main(String[] args) {
-        PreJoinRepl preJoin = new PreJoinRepl(server);
-        AuthData auth = preJoin.run();
-        if (auth != null) {
-            PostJoinRepl postJoin = new PostJoinRepl(server, auth);
-            postJoin.run();
+        boolean cont = true;
+        while(cont) {
+            PreJoinRepl preJoin = new PreJoinRepl(server);
+            AuthData auth = preJoin.run();
+            if (auth != null) {
+                PostJoinRepl postJoin = new PostJoinRepl(server, auth);
+                cont = postJoin.run();
+            }
+            else {
+                break;
+            }
         }
     }
 }

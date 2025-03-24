@@ -30,7 +30,7 @@ public class PreJoinClient {
         try {
             if (command.length >= 3) {
                 auth = server.login(new UserData(command[1], command[2], null));
-                return "Successfully logged in";
+                return SET_TEXT_COLOR_BLUE + "Successfully logged in" + RESET_TEXT_COLOR;
             } else {
                 return help();
             }
@@ -43,7 +43,7 @@ public class PreJoinClient {
         try {
             if (command.length >= 4) {
                 auth = server.register(new UserData(command[1], command[2], command[3]));
-                return "Successfully registered";
+                return SET_TEXT_COLOR_BLUE + "Successfully registered" + RESET_TEXT_COLOR;
             } else {
                 return help();
             }

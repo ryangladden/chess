@@ -1,24 +1,32 @@
 package client;
 
-import chess.ChessBoard;
 import chess.ChessGame;
-import chess.ChessPiece;
 import model.AuthData;
 import model.GameData;
 import server.AlreadyTaken;
+import server.InvalidCommand;
 import server.ServerFacade;
 import server.Unauthorized;
-
 import static ui.EscapeSequences.*;
 
 public class PostJoinClient {
 
     private final ServerFacade server;
     private final AuthData auth;
+    private int idStart;
+    private boolean gamesExist;
 
     public PostJoinClient(ServerFacade server, AuthData auth) {
         this.server = server;
         this.auth = auth;
+        GameData[] games =  server.listGames(auth.authToken());
+        if (games.length == 0) {
+            gamesExist = false;
+            idStart = 0;
+        } else {
+            this.idStart = server.listGames(auth.authToken())[0].gameID();
+            gamesExist = true;
+        }
     }
 
     public String eval(String input) {
@@ -27,6 +35,7 @@ public class PostJoinClient {
             case "create" -> createGame(command);
             case "list" -> listGames();
             case "join" -> joinGame(command);
+            case "logout" -> logout();
             case "quit" -> quit();
             default -> help();
         };
@@ -36,7 +45,10 @@ public class PostJoinClient {
         try {
             if (command.length >= 2) {
                 int id = server.createGame(command[1], auth.authToken());
-                return SET_TEXT_COLOR_BLUE + "Game \"" + command[1] + "\" created with ID " + id + RESET_TEXT_COLOR;
+                if (!gamesExist) {
+                    this.idStart = id;
+                }
+                return SET_TEXT_COLOR_BLUE + "Game \"" + command[1] + "\" created with ID " + (id - idStart + 1) + RESET_TEXT_COLOR;
             }
             return help();
         } catch (Unauthorized e) {
@@ -44,13 +56,16 @@ public class PostJoinClient {
         }
     }
 
-    private String listGames() {
+    public String listGames() {
         try {
             GameData[] games = server.listGames(auth.authToken());
-            StringBuilder result = new StringBuilder();
-            printListHeaders();
+            if (games.length == 0) {
+                return SET_TEXT_COLOR_BLUE + "No games available. Create a new game using the \"create\" command." + RESET_TEXT_COLOR;
+            }
+            StringBuilder result = new StringBuilder(SET_TEXT_COLOR_BLUE).append("LIST OF AVAILABLE GAMES:").append(RESET_TEXT_COLOR).append("\n");
+            result.append(SET_TEXT_BOLD).append(SET_BG_COLOR_WHITE).append(SET_TEXT_COLOR_BLACK).append(printTableRow("ID", "GAME NAME", "WHITE   ", "BLACK   ")).append(RESET_TEXT_BOLD_FAINT).append(RESET_TEXT_COLOR).append(RESET_BG_COLOR).append("\n");
             for (GameData game : games) {
-                result.append(parseGameData(game));
+                result.append(printTableRow(String.valueOf(game.gameID() - idStart + 1), game.gameName(), game.whiteUsername(), game.blackUsername())).append("\n");
             }
             return result.toString();
         } catch (Unauthorized e) {
@@ -65,15 +80,20 @@ public class PostJoinClient {
                 if (!command[2].equalsIgnoreCase("black") && !command[2].equalsIgnoreCase("white")) {
                     return help();
                 }
-                server.joinGame(id, command[2].toUpperCase(), auth.authToken());
+                server.joinGame(id + idStart - 1, command[2].toUpperCase(), auth.authToken());
+                System.out.println(SET_TEXT_COLOR_BLUE + "joining game " + id + "..." + RESET_TEXT_COLOR);
                 System.out.println(printGame(new ChessGame(), command[2].toLowerCase()));
-                return SET_TEXT_COLOR_BLUE + "joining game " + id + "..." + RESET_TEXT_COLOR;
+                return "quit";
             }
             return help();
         } catch (Unauthorized e) {
            return printUnauthenticated();
         } catch (AlreadyTaken e) {
-            return SET_TEXT_COLOR_RED + "That team is already taken in that game. Join as a different color or join a different game" + RESET_TEXT_COLOR;
+            return SET_TEXT_COLOR_RED + "That team is already taken in that game. Join as a different color or join a different game." + RESET_TEXT_COLOR;
+        } catch (InvalidCommand e) {
+            return SET_TEXT_COLOR_RED + "Game with ID " + command[1] + " does not exist. Use \"list\" command to see available games." + RESET_TEXT_COLOR;
+        } catch (Exception e) {
+            return help();
         }
     }
 
@@ -97,22 +117,23 @@ public class PostJoinClient {
                 "   quit                                        " + RESET_TEXT_BOLD_FAINT + "Quit";
     }
 
-    private String parseGameData(GameData game) {
-        String black = game.blackUsername() == null ? SET_TEXT_FAINT + SET_TEXT_BLINKING + "available" + RESET_TEXT_BOLD_FAINT + RESET_TEXT_BLINKING : game.blackUsername();
-        String white = game.whiteUsername() == null ? SET_TEXT_FAINT + SET_TEXT_BLINKING + "available\n" + RESET_TEXT_BOLD_FAINT + RESET_TEXT_BLINKING : game.whiteUsername() + "\n";
-        return "\t" + game.gameID() + "\t\t" + game.gameName() + "\t\t" + black + "\t\t\t\t" + white;
-    }
 
-    private void printListHeaders() {
-        System.out.println("\tID\t\tGAME NAME\t\tBLACK USERNAME\t\t\tWHITE USERNAME");
+    private String printTableRow(String id, String name, String white, String black) {
+        String whiteUsername = white == null ? "AVAILABLE" : white;
+        String blackUsername = black == null ? "AVAILABLE" : black;
+        return String.format("%4s%16s%16s%16s", id, name, whiteUsername, blackUsername);
     }
 
     private String printUnauthenticated() {
-        System.out.println(SET_TEXT_COLOR_RED + "There was an error authenticating you with the server\n Please log in.\nThe app will close now.");
-        return "quit";
+        System.out.println(SET_TEXT_COLOR_RED + "There was an error authenticating you with the server\nPlease log in again.\n");
+        return "logout";
     }
 
     private String printGame(chess.ChessGame game, String team) {
         return BoardPrinter.printBoard(game, team);
+    }
+
+    private String logout() {
+        return "logout";
     }
 }

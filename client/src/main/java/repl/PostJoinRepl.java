@@ -18,19 +18,32 @@ public class PostJoinRepl {
         this.client = new PostJoinClient(server, auth);
     }
 
-    public void run() {
-        System.out.println(client.help());
+    public boolean run() {
+        System.out.println(client.help() + "\n\n");
+        System.out.println(client.listGames());
         Scanner scanner = new Scanner(System.in);
         String result = "";
         while (!result.equals("quit")) {
             printPrompt();
             String input = scanner.nextLine();
             result = client.eval(input);
-            System.out.println(result);
+            if (result == "logout") {
+                return true;
+            }
+            printResult(result);
         }
+        return false;
     }
 
     private void printPrompt() {
         System.out.print("\n" + SET_TEXT_FAINT + "CHESS >>> " + RESET_TEXT_BOLD_FAINT);
+    }
+
+    private void printResult(String result) {
+        if (result != "quit") {
+            System.out.println(result);
+        } else {
+            System.out.println("Exiting");
+        }
     }
 }
