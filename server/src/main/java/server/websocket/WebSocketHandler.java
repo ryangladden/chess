@@ -25,6 +25,18 @@ public class WebSocketHandler {
     }
 
     private void leaveGame(UserGameCommand command) {
+        
+    }
+
+    private void resign(UserGameCommand command) {
+
+    }
+
+    private void connect(UserGameCommand command) {
+
+    }
+
+    private void makeMove(UserGameCommand command, String message) {
 
     }
 }

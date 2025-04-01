@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -38,13 +39,13 @@ public class DatabaseDataAccess extends DataAccess {
             );
             """,
             """
-            
             CREATE TABLE IF NOT EXISTS games (
             `id` int NOT NULL AUTO_INCREMENT,
             `name` VARCHAR(256) NOT NULL,
             `white` int DEFAULT NULL,
             `black` int DEFAULT NULL,
-            `game` TEXT DEFAULT NULL,
+            `game` JSON DEFAULT ('""" + new ChessGame().toJson() + "'),\n" +
+            """
             PRIMARY KEY(`id`),
             FOREIGN KEY (`white`) REFERENCES users(`id`) ON DELETE SET NULL,
             FOREIGN KEY (`black`) REFERENCES users(`id`) ON DELETE SET NULL
@@ -53,7 +54,10 @@ public class DatabaseDataAccess extends DataAccess {
     };
 
     public DatabaseDataAccess() throws DataAccessException {
+        System.out.println("Creating tables...");
+        System.out.println(CREATE_TABLES[2]);
         createDatabase();
+        System.out.println("Done creating tables");
     }
 
     private static void createDatabase() throws DataAccessException {

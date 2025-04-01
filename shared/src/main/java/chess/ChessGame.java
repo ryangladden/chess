@@ -1,5 +1,7 @@
 package chess;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -249,5 +251,14 @@ public class ChessGame implements Cloneable {
     public enum TeamColor {
         WHITE,
         BLACK
+    }
+
+    public String toJson() {
+        String json = new Gson().toJson(this);
+        return json;
+    }
+
+    public static ChessGame fromJson(String json) {
+        return new Gson().fromJson(json, ChessGame.class);
     }
 }
