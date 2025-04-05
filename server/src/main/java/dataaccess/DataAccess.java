@@ -34,4 +34,6 @@ public abstract class DataAccess {
     public abstract void joinGame(UserData user, int gameID, String playerColor) throws InvalidRequest, ColorTakenException, InvalidGameID;
 
     public abstract void clear();
+
+    public abstract GameData getGame(int gameID);
 }

@@ -114,6 +114,11 @@ public class MemoryDataAccess extends DataAccess {
         this.games = new HashMap<>();
     }
 
+    @Override
+    public GameData getGame(int gameID) {
+        return games.get(valueOf(gameID));
+    }
+
     private GameData removeBoard(GameData game) {
         return new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), null);
     }

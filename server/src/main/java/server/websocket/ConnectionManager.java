@@ -1,6 +1,7 @@
 package server.websocket;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ServerMessage;
@@ -17,9 +18,8 @@ public class ConnectionManager {
 
     public final ConcurrentHashMap<Integer, ConcurrentHashMap<String, Connection>> connections = new ConcurrentHashMap<>();
 
-    public void add(String authToken, int gameID, String role, Session session) throws DataAccessException {
-        Connection.Role teamColor = getRole(role);
-        Connection connection = new Connection(authToken, gameID, teamColor, session);
+    public void add(String authToken, int gameID, Connection.Role role, Session session, DataAccess dataAccess) throws DataAccessException {
+        Connection connection = new Connection(authToken, gameID, role, session, dataAccess);
         if (connections.containsKey(gameID)) {
             connections.get(gameID).put(authToken, connection);
         } else {
@@ -58,11 +58,9 @@ public class ConnectionManager {
         }
     }
 
-    private Connection.Role getRole(String role) {
-        if (Objects.equals(role, "observer")) {
-            return OBSERVER;
-        } else {
-            return Objects.equals(role, "white") ? WHITE : BLACK;
-        }
+    public void send(int gameID, String authToken, ServerMessage serverMessage) throws IOException {
+        Connection connection = getConnection(gameID, authToken);
+        String message = new Gson().toJson(serverMessage);
+        connection.send(message);
     }
 }

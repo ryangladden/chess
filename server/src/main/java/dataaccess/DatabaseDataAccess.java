@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -54,10 +55,7 @@ public class DatabaseDataAccess extends DataAccess {
     };
 
     public DatabaseDataAccess() throws DataAccessException {
-        System.out.println("Creating tables...");
-        System.out.println(CREATE_TABLES[2]);
         createDatabase();
-        System.out.println("Done creating tables");
     }
 
     private static void createDatabase() throws DataAccessException {
@@ -225,7 +223,8 @@ public class DatabaseDataAccess extends DataAccess {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     GameData game = getGame(rs);
-                    games.add(game);
+                    GameData gameNull = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), null);
+                    games.add(gameNull);
                 }
                 return games;
             } catch (SQLException e) {
@@ -288,6 +287,44 @@ public class DatabaseDataAccess extends DataAccess {
         }
     }
 
+    @Override
+    public GameData getGame(int gameID) {
+        String sql = """
+        SELECT games.*,
+        white.username AS white_player,
+        black.username AS black_player
+        FROM games
+        LEFT JOIN users AS white ON games.white = white.id
+        LEFT JOIN users AS black on games.black = black.id
+        WHERE games.id = ?""";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, gameID);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    System.out.println(parseGameResult(rs));
+                    return parseGameResult(rs);
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private GameData parseGameResult(ResultSet rs) throws SQLException, DataAccessException {
+        String json = rs.getString("game");
+        int id = rs.getInt("id");
+        String white = rs.getString("white_player");
+        String black = rs.getString("black_player");
+        String name = rs.getString("name");
+        ChessGame game = new Gson().fromJson(json, ChessGame.class);
+        return new GameData(id, white, black, name, game);
+    }
+
     private UserData getUserFromID(int id) throws DataAccessException {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (Connection conn = DatabaseManager.getConnection()) {
@@ -326,17 +363,20 @@ public class DatabaseDataAccess extends DataAccess {
         }
     }
 
-    private GameData getGame(ResultSet rs) throws SQLException, DataAccessException {
+
+    public GameData getGame(ResultSet rs) throws SQLException, DataAccessException {
         int id = rs.getInt("id");
         int whiteResult = rs.getInt("white");
         int blackResult = rs.getInt("black");
         String gameName = rs.getString("name");
+        String json = rs.getString("game");
+        ChessGame game = new Gson().fromJson(json, ChessGame.class);
         return new GameData(
                 id,
                 whiteResult == 0 ? null : getUserFromID(whiteResult).username(),
                 blackResult == 0 ? null : getUserFromID(blackResult).username(),
                 gameName,
-                null
+                game
         );
     }
 

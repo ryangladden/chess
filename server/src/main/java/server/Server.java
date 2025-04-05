@@ -22,7 +22,7 @@ public class Server {
             memoryData = new DatabaseDataAccess();
             userService = new UserService(memoryData);
             gameService = new GameService(memoryData);
-            webSocketHandler = new WebSocketHandler();
+            webSocketHandler = new WebSocketHandler(memoryData);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
