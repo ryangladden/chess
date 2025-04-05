@@ -50,18 +50,26 @@ public class WebSocketHandler {
         System.out.println("resign called");
     }
 
-    private void connect(Session session, UserGameCommand command) throws DataAccessException, IOException {
-        UserData user = dataAccess.authenticate(command.getAuthToken());
-        GameData game = dataAccess.getGame(command.getGameID());
+    private void connect(Session session, UserGameCommand command) {
+        try {
+            UserData user = dataAccess.authenticate(command.getAuthToken());
+            System.out.println(user);
+            GameData game = dataAccess.getGame(command.getGameID());
 
-        Connection.Role role = getRole(game, user.username());
-        connections.add(command.getAuthToken(), command.getGameID(), role, session, dataAccess);
+            Connection.Role role = getRole(game, user.username());
+            connections.add(command.getAuthToken(), command.getGameID(), role, session, dataAccess);
 
-        ServerMessage message = new ServerMessage(NOTIFICATION, gameToJson(game));
-        connections.send(game.gameID(), command.getAuthToken(), message);
+            ServerMessage message = new ServerMessage(NOTIFICATION, gameToJson(game));
+            connections.send(game.gameID(), command.getAuthToken(), message);
 
-        message = new ServerMessage(NOTIFICATION, user.username() + " joined the game");
-        connections.broadcast(game.gameID(), command.getAuthToken(), message);
+            message = new ServerMessage(NOTIFICATION, user.username() + " joined the game");
+            connections.broadcast(game.gameID(), command.getAuthToken(), message);
+        } catch (DataAccessException e) {
+            String message = new Gson().toJson(new ServerMessage(ERROR, "Game does not exist"));
+            session.getRemote().sendString(message);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void makeMove(UserGameCommand command, String message) {
