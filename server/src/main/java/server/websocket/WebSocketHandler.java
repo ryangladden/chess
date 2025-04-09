@@ -60,7 +60,7 @@ public class WebSocketHandler {
             Connection.Role role = getRole(game, user.username());
             connections.add(command.getAuthToken(), command.getGameID(), role, session, dataAccess);
 
-            ServerMessage message = new ServerMessage(NOTIFICATION, gameToJson(game));
+            ServerMessage message = new ServerMessage(game.game());
             connections.send(game.gameID(), command.getAuthToken(), message);
 
             message = new ServerMessage(NOTIFICATION, user.username() + " joined the game");

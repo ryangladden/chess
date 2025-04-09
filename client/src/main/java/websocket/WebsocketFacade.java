@@ -19,6 +19,7 @@ public class WebsocketFacade extends Endpoint {
     String authToken;
     int gameID;
 
+
     public WebsocketFacade(String url, NotificationHandler notificationHandler, String authToken, int gameID) throws RuntimeException {
         this.authToken = authToken;
         this.gameID = gameID;
