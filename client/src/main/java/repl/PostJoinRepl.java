@@ -26,7 +26,7 @@ public class PostJoinRepl {
             printPrompt();
             String input = scanner.nextLine();
             result = client.eval(input);
-            if (result == "logout") {
+            if (result.equals("logout")) {
                 return true;
             }
             printResult(result);

@@ -42,6 +42,7 @@ public class WebSocketHandler {
         System.out.println("leave game called");
         String username = connections.getConnection(command.getGameID(), command.getAuthToken()).username;
         String message = username + " has left the game";
+        connections.remove(command.getGameID(), command.getAuthToken());
         ServerMessage notification = new ServerMessage(NOTIFICATION, message);
         connections.broadcast(command.getGameID(), command.getAuthToken(), notification);
     }
@@ -65,8 +66,12 @@ public class WebSocketHandler {
             message = new ServerMessage(NOTIFICATION, user.username() + " joined the game");
             connections.broadcast(game.gameID(), command.getAuthToken(), message);
         } catch (DataAccessException e) {
-            String message = new Gson().toJson(new ServerMessage(ERROR, "Game does not exist"));
-            session.getRemote().sendString(message);
+            try {
+                String message = new Gson().toJson(new ServerMessage(ERROR, "Game does not exist"));
+                session.getRemote().sendString(message);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
