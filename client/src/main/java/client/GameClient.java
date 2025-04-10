@@ -44,11 +44,17 @@ public class GameClient {
     }
 
     private String resign() {
+        if (this.color.equals("observer")) {
+            return helpObserver();
+        }
         websocket.resign();
         return "Resigning from game";
     }
 
     private String move(String[] command) {
+        if (this.color.equals("observer")) {
+            return helpObserver();
+        }
         try {
             if (command.length >= 3) {
                 if (turnColor(game).equals(color)) {
@@ -113,7 +119,7 @@ public class GameClient {
                 SET_TEXT_BOLD +
                 "   board [<as color>]                          " + RESET_TEXT_BOLD_FAINT + "Print board as it is\n" +
                 SET_TEXT_BOLD +
-                "   leave                                       " + RESET_TEXT_BOLD_FAINT + "Leave the game, opening the game for another person\n";
+                "   leave                                       " + RESET_TEXT_BOLD_FAINT + "Leave the game\n";
     }
 
     public ChessMove parseMoves(String start, String end) throws InvalidMoveException {
