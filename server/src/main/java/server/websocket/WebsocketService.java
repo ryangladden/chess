@@ -55,4 +55,8 @@ public class WebsocketService extends Service {
             case BLACK -> "black";
         };
     }
+
+    public void deleteGame(int gameID) {
+        memoryData.deleteGame(gameID);
+    }
 }

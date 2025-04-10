@@ -132,4 +132,9 @@ public class MemoryDataAccess extends DataAccess {
     public void removeUser(int gameID, String role) {
 
     }
+
+    @Override
+    public void deleteGame(int gameID) {
+
+    }
 }

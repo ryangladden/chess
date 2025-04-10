@@ -433,4 +433,17 @@ public class DatabaseDataAccess extends DataAccess {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void deleteGame(int gameID) {
+        String sql = "DELETE FROM games WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, gameID);
+                stmt.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+        throw new RuntimeException(e);
+        }
+    }
 }

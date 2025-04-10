@@ -40,4 +40,6 @@ public abstract class DataAccess {
     public abstract void setGame(GameData game);
 
     public abstract void removeUser(int gameID, String role);
+
+    public abstract void deleteGame(int gameID);
 }

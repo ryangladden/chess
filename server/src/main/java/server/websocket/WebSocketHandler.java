@@ -86,6 +86,7 @@ public class WebSocketHandler {
             } else if (canMove) {
                 ServerMessage message = new ServerMessage(NOTIFICATION, connection.username + " resigned from the game.");
                 connections.broadcast(command.getGameID(), "", message);
+                System.out.println("canMove switched due to resign");
                 canMove = false;
             } else {
                 connections.send(command.getGameID(), command.getAuthToken(), new ServerMessage(ERROR, "This game has ended"));
@@ -209,40 +210,17 @@ public class WebSocketHandler {
         return map;
     }
 
-    private boolean isWhiteCheck(GameData gameData) {
-        System.out.println("Is white in check?");
+    private boolean isCheck(GameData gameData, ChessGame.TeamColor color) {
         ChessGame game = gameData.game();
-        System.out.println(game.isInCheck(ChessGame.TeamColor.WHITE));
-        return game.isInCheck(ChessGame.TeamColor.WHITE);
+        return game.isInCheck(color);
     }
 
-    private boolean isBlackCheck(GameData gameData) {
-        System.out.println("Is white in check?");
+    private boolean isCheckmate(GameData gameData, ChessGame.TeamColor color) {
         ChessGame game = gameData.game();
-        System.out.println(game.isInCheck(ChessGame.TeamColor.BLACK));
-        return game.isInCheck(ChessGame.TeamColor.BLACK);
+        return game.isInCheckmate(color);
     }
 
-    private boolean isWhiteCheckmate(GameData gameData) {
-        System.out.println("Is white in check?");
-        ChessGame game = gameData.game();
-        return game.isInCheckmate(ChessGame.TeamColor.WHITE);
-    }
-
-    private boolean isBlackCheckmate(GameData gameData) {
-        System.out.println("Is white in check?");
-        ChessGame game = gameData.game();
-        return game.isInCheckmate(ChessGame.TeamColor.BLACK);
-    }
-
-    private boolean isWhiteStalemate(GameData gameData) {
-        System.out.println("Is white in check?");
-        ChessGame game = gameData.game();
-        return game.isInCheckmate(ChessGame.TeamColor.WHITE);
-    }
-
-    private boolean isBlackStalemate(GameData gameData) {
-        System.out.println("Is white in check?");
+    private boolean isStalemate(GameData gameData) {
         ChessGame game = gameData.game();
         return game.isInStalemate(ChessGame.TeamColor.BLACK);
     }
@@ -250,22 +228,25 @@ public class WebSocketHandler {
     private String announcement(GameData gameData) {
         String white = gameData.whiteUsername();
         String black = gameData.blackUsername();
-        if (isWhiteCheckmate(gameData)) {
+        if (isCheckmate(gameData, ChessGame.TeamColor.WHITE)) {
+            System.out.println("canMove switched due to white checkmate");
             canMove = false;
+            service.deleteGame(gameData.gameID());
             return white + "(white) in checkmate. " + black + " wins!";
-        } else if (isBlackCheckmate(gameData)) {
+        } else if (isCheckmate(gameData, ChessGame.TeamColor.BLACK)) {
+            System.out.println("canMove switched due to black checkmate");
             canMove = false;
+            service.deleteGame(gameData.gameID());
             return black + "(white) in checkmate. " + white + " wins!";
-        } else if (isWhiteCheck(gameData)) {
+        } else if (isStalemate(gameData)) {
+            System.out.println("canMove switched due to stalemate");
+            canMove = false;
+            service.deleteGame(gameData.gameID());
+            return "The game is in stalemate";
+        } else if (isCheck(gameData, ChessGame.TeamColor.WHITE)) {
             return white + " (white) in check";
-        } else if (isBlackCheck(gameData)) {
+        } else if (isCheck(gameData, ChessGame.TeamColor.BLACK)) {
             return black + "(black) in check";
-        } else if (isWhiteStalemate(gameData)) {
-            canMove = false;
-            return "The game is in stalemate";
-        } else if (isBlackStalemate(gameData)) {
-            canMove = false;
-            return "The game is in stalemate";
         }
         return null;
     }
