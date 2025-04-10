@@ -35,7 +35,6 @@ public class PostJoinRepl {
             if (result.equals("logout")) {
                 return new PostJoinResult(LOGOUT);
             } else if (result.split(" ")[0].equals("join")) {
-                System.out.println("MADE IT HERE BROTHER");
                 String[] join = result.split(" ");
                 System.out.println(join[0]);
                 int gameID = Integer.parseInt(join[1]);

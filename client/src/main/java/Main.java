@@ -17,7 +17,6 @@ public class Main {
                 PostJoinRepl postJoin = new PostJoinRepl(SERVER, auth);
                 PostJoinResult result = postJoin.run();
                 if (result.result == PostJoinResult.ResultType.JOIN) {
-                    System.out.println("Game REPL");
                     GameRepl game = new GameRepl(SERVER, result.gameInfo.authToken(), result.gameInfo.gameID(), result.gameInfo.teamColor());
                     game.run();
                 } else if (result.result == PostJoinResult.ResultType.LOGOUT) {

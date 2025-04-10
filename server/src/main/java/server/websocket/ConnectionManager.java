@@ -30,7 +30,9 @@ public class ConnectionManager {
     }
 
     public void remove(int gameID, String authToken) {
+        System.out.println(connections);
         connections.get(gameID).remove(authToken);
+        System.out.println(connections);
     }
 
     public Connection getConnection(int gameID, String authToken) {

@@ -22,6 +22,7 @@ public class GameClient {
     public GameClient(WebsocketFacade websocket, String authToken, int gameID, String color) {
         this.websocket = websocket;
         this.color = color;
+        System.out.println(color);
     }
 
     public String eval(String input) {
@@ -50,11 +51,15 @@ public class GameClient {
     private String move(String[] command) {
         try {
             if (command.length >= 3) {
-                ChessMove move = parseMoves(command[1], command[2]);
-                ChessGame copy = game.clone();
-                copy.makeMove(move);
-                websocket.makeMove(move);
-                return "made move";
+                if (turnColor(game).equals(color)) {
+                    ChessMove move = parseMoves(command[1], command[2]);
+                    ChessGame copy = game.clone();
+                    copy.makeMove(move);
+                    websocket.makeMove(move);
+                    return "made move";
+                } else {
+                    return "It's not your turn";
+                }
             }
             return SET_TEXT_COLOR_RED + "Not enough arguments for a move command" + RESET_TEXT_COLOR;
         } catch (InvalidMoveException e) {
@@ -143,6 +148,13 @@ public class GameClient {
         map.put("g", 7);
         map.put("h", 8);
         return map;
+    }
+
+    private String turnColor(ChessGame game) {
+        return switch (game.getTeamTurn()) {
+            case WHITE -> "white";
+            case BLACK -> "black";
+        };
     }
 
 }

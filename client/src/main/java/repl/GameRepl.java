@@ -19,13 +19,13 @@ public class GameRepl implements NotificationHandler {
     private final GameClient client;
     private final WebsocketFacade websocket;
     private boolean printed = false;
-    private String observeColor;
+//    private String observeColor;
 
     public GameRepl(ServerFacade server, String authToken, int gameID, String color) {
         this.websocket = new WebsocketFacade(server.getServerUrl(), this, authToken, gameID);
-        System.out.println("Game id: " + gameID + "\n");
         this.client = new GameClient(this.websocket, authToken, gameID, color);
-        this.observeColor = color.equals("observer") ? "white" : color;
+        System.out.println(color);
+//        this.observeColor = color.equals("observer") ? "white" : color;
         this.websocket.connect();
 
     }
@@ -39,7 +39,6 @@ public class GameRepl implements NotificationHandler {
 
 
         while (!result.equals("quit")) {
-            System.out.println("in the loop");
             printPrompt();
             String line = scanner.nextLine();
 

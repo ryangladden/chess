@@ -147,7 +147,7 @@ public class PostJoinClient {
     }
 
     private String watch(String[] command) {
-        return printGame(new ChessGame(), "white");
+        return "join " + command[1] + " observer";
     }
 
 }

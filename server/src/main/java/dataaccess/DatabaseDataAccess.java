@@ -365,12 +365,14 @@ public class DatabaseDataAccess extends DataAccess {
 
 
     public GameData getGame(ResultSet rs) throws SQLException, DataAccessException {
+        System.out.println("getting that game");
         int id = rs.getInt("id");
         int whiteResult = rs.getInt("white");
         int blackResult = rs.getInt("black");
         String gameName = rs.getString("name");
         String json = rs.getString("game");
         ChessGame game = new Gson().fromJson(json, ChessGame.class);
+        System.out.println(game.getBoard());
         return new GameData(
                 id,
                 whiteResult == 0 ? null : getUserFromID(whiteResult).username(),
@@ -381,17 +383,20 @@ public class DatabaseDataAccess extends DataAccess {
     }
 
     public void setGame(GameData game) {
-        String sql = "UPDATE games SET game = ? WHERE id = " + game.gameID();
-        String json = new Gson().toJson(game);
+        String sql = "UPDATE games SET game = ? WHERE id = ?";
+        String queryGame = "SELECT * FROM games WHERE id = ?";
+        String json = new Gson().toJson(game.game());
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, json);
-                int update = stmt.executeUpdate();
+                stmt.setInt(2, game.gameID());
+                System.out.println(sql);
+                stmt.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("You got an sql exception, something went wrong");
         } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            System.out.println("e");
         }
     }
 
@@ -417,10 +422,11 @@ public class DatabaseDataAccess extends DataAccess {
 
     @Override
     public void removeUser(int gameID, String role) {
-        String sql = "UPDATE games SET " + role + " = NULL WHERE id = " + gameID + ";";
+        String sql = "UPDATE games SET " + role + " = NULL WHERE id = ?;";
         System.out.println(sql);
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1,gameID);
                 stmt.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {

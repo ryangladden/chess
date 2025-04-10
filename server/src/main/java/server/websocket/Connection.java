@@ -20,6 +20,7 @@ public class Connection {
         this.role = role;
         this.session = session;
         this.username = dataAccess.authenticate(authToken).username();
+        System.out.println("CONNECTION MADE BY " + username + " AS " + role);
     }
 
     public void send(String msg) throws IOException {
