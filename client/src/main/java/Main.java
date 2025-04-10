@@ -1,6 +1,7 @@
 import model.AuthData;
 import repl.GameRepl;
 import repl.PostJoinRepl;
+import repl.PostJoinResult;
 import repl.PreJoinRepl;
 import server.ServerFacade;
 import websocket.WebsocketFacade;
@@ -10,14 +11,24 @@ public class Main {
 
     public static void main(String[] args) {
         boolean cont = true;
+        AuthData auth = null;
         while (cont) {
-            PreJoinRepl preJoin = new PreJoinRepl(SERVER);
-            AuthData auth = preJoin.run();
             if (auth != null) {
                 PostJoinRepl postJoin = new PostJoinRepl(SERVER, auth);
-                cont = postJoin.run();
-            } else {
-                break;
+                PostJoinResult result = postJoin.run();
+                if (result.result == PostJoinResult.ResultType.JOIN) {
+                    System.out.println("Game REPL");
+                    GameRepl game = new GameRepl(SERVER, result.gameInfo.authToken(), result.gameInfo.gameID(), result.gameInfo.teamColor());
+                    game.run();
+                } else if (result.result == PostJoinResult.ResultType.LOGOUT) {
+                    auth = null;
+                } else if (result.result == PostJoinResult.ResultType.QUIT) {
+                    cont = false;
+                }
+                }
+            if (auth==null) {
+                PreJoinRepl preJoin = new PreJoinRepl(SERVER);
+                auth = preJoin.run();
             }
         }
     }

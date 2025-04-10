@@ -36,4 +36,8 @@ public abstract class DataAccess {
     public abstract void clear();
 
     public abstract GameData getGame(int gameID);
+
+    public abstract void setGame(GameData game);
+
+    public abstract void removeUser(int gameID, String role);
 }

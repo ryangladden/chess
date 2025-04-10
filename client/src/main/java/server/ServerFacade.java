@@ -20,6 +20,10 @@ public class ServerFacade {
         serverUrl = "http://localhost:" + port;
     }
 
+    public String getServerUrl() {
+        return serverUrl;
+    }
+
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");

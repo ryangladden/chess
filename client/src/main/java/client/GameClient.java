@@ -19,9 +19,9 @@ public class GameClient {
     private final String color;
     private final Map<String, Integer> COORDINATES = generateCoordinateMap();
 
-    public GameClient(WebsocketFacade websocket, String authToken, int gameID) {
+    public GameClient(WebsocketFacade websocket, String authToken, int gameID, String color) {
         this.websocket = websocket;
-        this.color = "white";
+        this.color = color;
     }
 
     public String eval(String input) {
@@ -39,7 +39,7 @@ public class GameClient {
 
     private String leave() {
         websocket.leave();
-        return "Leaving game...";
+        return "quit";
     }
 
     private String resign() {
@@ -69,7 +69,7 @@ public class GameClient {
         try {
             if (command.length >= 2) {
                 ChessPosition position = parsePosition(command[1]);
-                return BoardPrinter.printValidMoves(game, "white", position);
+                return BoardPrinter.printValidMoves(game, color == "observer" ? "white" : color, position);
             }
             return SET_TEXT_COLOR_RED + "Not enough arguments for a show command" + RESET_TEXT_COLOR;
         } catch (InvalidCommand e) {
@@ -78,7 +78,7 @@ public class GameClient {
     }
 
     private String printBoard() {
-        return "called PRINT";
+        return getBoard();
     }
 
     public void setGame(ChessGame game) {
@@ -113,6 +113,10 @@ public class GameClient {
 
     public ChessMove parseMoves(String start, String end) throws InvalidMoveException {
         return new ChessMove(parsePosition(start), parsePosition(end));
+    }
+
+    public String getBoard() {
+        return BoardPrinter.printBoard(this.game, color == "observer" ? "white" : color);
     }
 
     private ChessPosition parsePosition(String position) {

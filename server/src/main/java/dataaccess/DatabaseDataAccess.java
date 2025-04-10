@@ -380,6 +380,21 @@ public class DatabaseDataAccess extends DataAccess {
         );
     }
 
+    public void setGame(GameData game) {
+        String sql = "UPDATE games SET game = ? WHERE id = " + game.gameID();
+        String json = new Gson().toJson(game);
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, json);
+                int update = stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private boolean validJoinGame(int gameID, String playerColor) throws InvalidGameID {
         String sql = "SELECT * FROM games WHERE id = ?";
         try (Connection conn = DatabaseManager.getConnection()) {
@@ -400,4 +415,16 @@ public class DatabaseDataAccess extends DataAccess {
         }
     }
 
+    @Override
+    public void removeUser(int gameID, String role) {
+        String sql = "UPDATE games SET " + role + " = NULL WHERE id = " + gameID + ";";
+        System.out.println(sql);
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

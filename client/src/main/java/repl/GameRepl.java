@@ -4,6 +4,7 @@ import chess.ChessGame;
 import client.BoardPrinter;
 import client.GameClient;
 import com.google.gson.Gson;
+import server.ServerFacade;
 import websocket.NotificationHandler;
 import websocket.WebsocketFacade;
 import websocket.messages.ServerMessage;
@@ -18,10 +19,13 @@ public class GameRepl implements NotificationHandler {
     private final GameClient client;
     private final WebsocketFacade websocket;
     private boolean printed = false;
+    private String observeColor;
 
-    public GameRepl(String authToken, int gameID) {
-        this.websocket = new WebsocketFacade("http://localhost:8080", this, authToken, gameID);
-        this.client = new GameClient(this.websocket, authToken, gameID);
+    public GameRepl(ServerFacade server, String authToken, int gameID, String color) {
+        this.websocket = new WebsocketFacade(server.getServerUrl(), this, authToken, gameID);
+        System.out.println("Game id: " + gameID + "\n");
+        this.client = new GameClient(this.websocket, authToken, gameID, color);
+        this.observeColor = color.equals("observer") ? "white" : color;
         this.websocket.connect();
 
     }
@@ -33,16 +37,18 @@ public class GameRepl implements NotificationHandler {
         Scanner scanner = new Scanner(System.in);
         String result = "";
 
+
         while (!result.equals("quit")) {
-            if (client.getGame() != null) {
-                if (!printed) {
-                    System.out.println(BoardPrinter.printBoard(client.getGame(), "white") + "\n\n");
-                    printed = true;
-                }
-                printPrompt();
-                String input = scanner.nextLine();
-                result = client.eval(input);
+            System.out.println("in the loop");
+            printPrompt();
+            String line = scanner.nextLine();
+
+            try {
+                result = client.eval(line);
                 System.out.println(result);
+            } catch (Throwable e) {
+                var msg = e.toString();
+                System.out.print(msg);
             }
         }
     }
@@ -53,15 +59,19 @@ public class GameRepl implements NotificationHandler {
 
     @Override
     public void notify(ServerMessage message) {
-        switch (message.getServerMessageType()) {
-            case NOTIFICATION -> message.getMessage();
-            case LOAD_GAME -> setBoard(message.getGame());
-            case ERROR -> message.getMessage();
-        };
+        System.out.println("\n");
+        System.out.println(switch (message.getServerMessageType()) {
+                    case NOTIFICATION -> message.getMessage();
+                    case LOAD_GAME -> setBoard(message.getGame());
+                    case ERROR -> message.getMessage();
+                }
+        );
+        System.out.println("\n");
+        printPrompt();
     }
 
-    private void setBoard(ChessGame game) {
-        printed = false;
+    private String setBoard(ChessGame game) {
         client.setGame(game);
+        return client.getBoard();
     }
 }

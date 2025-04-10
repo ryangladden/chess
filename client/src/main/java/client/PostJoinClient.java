@@ -8,26 +8,22 @@ import server.InvalidCommand;
 import server.ServerFacade;
 import server.Unauthorized;
 
+import java.util.HashMap;
+import java.util.Set;
+
 import static ui.EscapeSequences.*;
 
 public class PostJoinClient {
 
     private final ServerFacade server;
     private final AuthData auth;
-    private final boolean gamesExist;
-    private int idStart;
+    private HashMap<Integer, Integer> idConversion = new HashMap<>();
+    private int currentId = 0;
 
     public PostJoinClient(ServerFacade server, AuthData auth) {
         this.server = server;
         this.auth = auth;
         GameData[] games = server.listGames(auth.authToken());
-        if (games.length == 0) {
-            gamesExist = false;
-            idStart = 0;
-        } else {
-            this.idStart = server.listGames(auth.authToken())[0].gameID();
-            gamesExist = true;
-        }
     }
 
     public String eval(String input) {
@@ -47,10 +43,8 @@ public class PostJoinClient {
         try {
             if (command.length >= 2) {
                 int id = server.createGame(command[1], auth.authToken());
-                if (!gamesExist) {
-                    this.idStart = id;
-                }
-                return SET_TEXT_COLOR_BLUE + "Game \"" + command[1] + "\" created with ID " + (id - idStart + 1) + RESET_TEXT_COLOR;
+                idConversion.put(currentId++, id);
+                return SET_TEXT_COLOR_BLUE + "Game \"" + command[1] + "\" created with ID " + (currentId - 1) + RESET_TEXT_COLOR;
             }
             return help();
         } catch (Unauthorized e) {
@@ -69,10 +63,14 @@ public class PostJoinClient {
             result.append(SET_TEXT_BOLD).append(SET_BG_COLOR_WHITE).append(SET_TEXT_COLOR_BLACK)
                     .append(printTableRow("ID", "GAME NAME", "WHITE   ", "BLACK   "))
                     .append(RESET_TEXT_BOLD_FAINT).append(RESET_TEXT_COLOR).append(RESET_BG_COLOR).append("\n");
+            idConversion = new HashMap<>();
+            int count = 1;
             for (GameData game : games) {
-                result.append(printTableRow(String.valueOf(game.gameID() - idStart + 1),
-                        game.gameName(), game.whiteUsername(), game.blackUsername())).append("\n");
+                idConversion.put(count, game.gameID());
+                result.append(printTableRow(String.valueOf(count), game.gameName(), game.whiteUsername(), game.blackUsername())).append("\n");
+                count++;
             }
+            currentId = count;
             return result.toString();
         } catch (Unauthorized e) {
             return printUnauthenticated();
@@ -80,16 +78,17 @@ public class PostJoinClient {
     }
 
     private String joinGame(String[] command) {
+        System.out.println("join command entered");
         try {
             if (command.length >= 3) {
                 int id = Integer.parseInt(command[1]);
                 if (!command[2].equalsIgnoreCase("black") && !command[2].equalsIgnoreCase("white")) {
                     return help();
                 }
-                server.joinGame(id + idStart - 1, command[2].toUpperCase(), auth.authToken());
+                server.joinGame(idConversion.get(id), command[2].toUpperCase(), auth.authToken());
                 System.out.println(SET_TEXT_COLOR_BLUE + "joining game " + id + "..." + RESET_TEXT_COLOR);
-                System.out.println(printGame(new ChessGame(), command[2].toLowerCase()));
-                return "okay";
+                System.out.println(command[0] + " " + idConversion.get(Integer.parseInt(command[1])) + " " + command[2]);
+                return command[0] + " " + idConversion.get(Integer.parseInt(command[1])) + " " + command[2];
             }
             return help();
         } catch (Unauthorized e) {
@@ -150,4 +149,5 @@ public class PostJoinClient {
     private String watch(String[] command) {
         return printGame(new ChessGame(), "white");
     }
+
 }

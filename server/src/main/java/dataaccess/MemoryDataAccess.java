@@ -122,4 +122,14 @@ public class MemoryDataAccess extends DataAccess {
     private GameData removeBoard(GameData game) {
         return new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), null);
     }
+
+    @Override
+    public void setGame(GameData game) {
+        games.put(valueOf(game.gameID()), game);
+    }
+
+    @Override
+    public void removeUser(int gameID, String role) {
+
+    }
 }

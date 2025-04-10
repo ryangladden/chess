@@ -31,4 +31,12 @@ public class Connection {
         BLACK,
         OBSERVER
     }
+
+    public String getRoleString() {
+        return switch(this.role) {
+            case WHITE -> "white";
+            case BLACK -> "black";
+            case OBSERVER -> "observer";
+        };
+    }
 }
