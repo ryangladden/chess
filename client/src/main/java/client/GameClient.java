@@ -17,7 +17,7 @@ public class GameClient {
     private final WebsocketFacade websocket;
     private ChessGame game = null;
     private final String color;
-    private static Map<String, Integer> COORDINATES = generateCoordinateMap();
+    private final static Map<String, Integer> COORDINATES = generateCoordinateMap();
 
     public GameClient(WebsocketFacade websocket, String authToken, int gameID, String color) {
         this.websocket = websocket;

@@ -23,7 +23,7 @@ import static websocket.messages.ServerMessage.ServerMessageType.*;
 @WebSocket
 public class WebSocketHandler {
 
-    private static HashMap<Integer, String> COORDINATES = generateCoordinateMap();
+    private final static HashMap<Integer, String> COORDINATES = generateCoordinateMap();
     private final ConnectionManager connections = new ConnectionManager();
     private final DataAccess dataAccess;
     private final WebsocketService service;
