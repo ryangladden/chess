@@ -138,10 +138,6 @@ public class PostJoinClient {
         return "logout";
     }
 
-    private String printGame(chess.ChessGame game, String team) {
-        return BoardPrinter.printBoard(game, team);
-    }
-
     private String logout() {
         return "logout";
     }

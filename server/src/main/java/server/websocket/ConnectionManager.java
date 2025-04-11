@@ -65,4 +65,11 @@ public class ConnectionManager {
         String message = new Gson().toJson(serverMessage);
         connection.send(message);
     }
+
+    public void setGameOver(int gameID) {
+        var game = connections.get(gameID);
+        for (Connection conn : game.values()) {
+            conn.setGameOver();
+        }
+    }
 }

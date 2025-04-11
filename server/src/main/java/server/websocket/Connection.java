@@ -13,6 +13,7 @@ public class Connection {
     public String authToken;
     public String username;
     public Role role;
+    public boolean gameOver;
 
     public Connection(String authToken, int gameID, Role role, Session session, DataAccess dataAccess) throws DataAccessException {
         this.authToken = authToken;
@@ -20,6 +21,7 @@ public class Connection {
         this.role = role;
         this.session = session;
         this.username = dataAccess.authenticate(authToken).username();
+        this.gameOver = false;
         System.out.println("CONNECTION MADE BY " + username + " AS " + role);
     }
 
@@ -39,5 +41,9 @@ public class Connection {
             case BLACK -> "black";
             case OBSERVER -> "observer";
         };
+    }
+
+    public void setGameOver() {
+        this.gameOver = true;
     }
 }

@@ -17,7 +17,7 @@ public class GameClient {
     private final WebsocketFacade websocket;
     private ChessGame game = null;
     private final String color;
-    private final Map<String, Integer> COORDINATES = generateCoordinateMap();
+    private static Map<String, Integer> COORDINATES = generateCoordinateMap();
 
     public GameClient(WebsocketFacade websocket, String authToken, int gameID, String color) {
         this.websocket = websocket;
@@ -84,7 +84,8 @@ public class GameClient {
             }
             return SET_TEXT_COLOR_RED + "Not enough arguments for a show command" + RESET_TEXT_COLOR;
         } catch (InvalidCommand e) {
-            return SET_TEXT_COLOR_RED + "Specify position using the letter and number coordinate found on the board (e.g. h2)" + RESET_TEXT_COLOR + "\n";
+            return SET_TEXT_COLOR_RED + "Specify position using the letter and number coordinate found on the board (e.g. h2)"
+                    + RESET_TEXT_COLOR + "\n";
         }
     }
 
@@ -102,9 +103,11 @@ public class GameClient {
 
     public String help() {
         return SET_TEXT_BOLD + "OPTIONS:\n" +
-                "   move <start position> <end position>        " + RESET_TEXT_BOLD_FAINT + "Move piece at start position to end position (positions are specified in the following notation: a4, g7, etc.)\n" +
+                "   move <start position> <end position>        " + RESET_TEXT_BOLD_FAINT
+                + "Move piece at start position to end position (positions are specified in the following notation: a4, g7, etc.)\n" +
                 SET_TEXT_BOLD +
-                "   show <position>                             " + RESET_TEXT_BOLD_FAINT + "Show all possible moves for piece at specified position\n" +
+                "   show <position>                             " + RESET_TEXT_BOLD_FAINT
+                + "Show all possible moves for piece at specified position\n" +
                 SET_TEXT_BOLD +
                 "   board [<as color>]                          " + RESET_TEXT_BOLD_FAINT + "Print board as it is\n" +
                 SET_TEXT_BOLD +
@@ -115,7 +118,8 @@ public class GameClient {
 
     public String helpObserver() {
         return SET_TEXT_BOLD + "OPTIONS:\n" +
-                "   show <position>                             " + RESET_TEXT_BOLD_FAINT + "Show all possible moves for piece at specified position\n" +
+                "   show <position>                             " + RESET_TEXT_BOLD_FAINT
+                + "Show all possible moves for piece at specified position\n" +
                 SET_TEXT_BOLD +
                 "   board [<as color>]                          " + RESET_TEXT_BOLD_FAINT + "Print board as it is\n" +
                 SET_TEXT_BOLD +
@@ -143,7 +147,7 @@ public class GameClient {
         }
     }
 
-    private HashMap<String, Integer> generateCoordinateMap() {
+    private static HashMap<String, Integer> generateCoordinateMap() {
         HashMap<String, Integer> map = new HashMap<String, Integer>();
         map.put("a", 1);
         map.put("b", 2);

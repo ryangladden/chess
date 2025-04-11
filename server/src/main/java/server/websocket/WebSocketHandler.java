@@ -12,11 +12,10 @@ import model.UserData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import server.Server;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
 
 import static server.websocket.Connection.Role.*;
 import static websocket.messages.ServerMessage.ServerMessageType.*;
@@ -24,11 +23,10 @@ import static websocket.messages.ServerMessage.ServerMessageType.*;
 @WebSocket
 public class WebSocketHandler {
 
-    private final HashMap<Integer, String> COORDINATES = generateCoordinateMap();
+    private static HashMap<Integer, String> COORDINATES = generateCoordinateMap();
     private final ConnectionManager connections = new ConnectionManager();
     private final DataAccess dataAccess;
     private final WebsocketService service;
-    private boolean canMove = true;
 
     public WebSocketHandler(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
@@ -49,10 +47,13 @@ public class WebSocketHandler {
                 case MAKE_MOVE -> makeMove(command);
             }
         } catch (JsonSyntaxException e) {
+            System.out.println("JSON ERROR");
             throw new RuntimeException(e);
         } catch (IOException e) {
+            System.out.println("IOException IN MAIN HANDLER THINGY");
             throw new RuntimeException(e);
         } catch (UnauthorizedException e) {
+            System.out.println("UNAUTHORIZED EXCEPTION in MAIN HANDLER THingY");
             session.getRemote().sendString(new Gson().toJson(new ServerMessage(ERROR, e.getMessage())));
         }
 
@@ -77,23 +78,22 @@ public class WebSocketHandler {
     }
 
     private void resign(UserGameCommand command) {
+        System.out.println("resign called");
         try {
-
             Connection connection = connections.getConnection(command.getGameID(), command.getAuthToken());
             String role = connection.getRoleString();
-            if (role.equals("observer")) {
+            if (connection.gameOver) {
+                connections.send(command.getGameID(), command.getAuthToken(), new ServerMessage(ERROR, "This game has already ended"));
+            } else if (role.equals("observer")) {
                 connections.send(command.getGameID(), command.getAuthToken(), new ServerMessage(ERROR, "observers cannot resign"));
-            } else if (canMove) {
+            } else {
+                connections.setGameOver(command.getGameID());
+                System.out.println("canMove switched due to resign");
                 ServerMessage message = new ServerMessage(NOTIFICATION, connection.username + " resigned from the game.");
                 connections.broadcast(command.getGameID(), "", message);
-                System.out.println("canMove switched due to resign");
-                canMove = false;
-            } else {
-                connections.send(command.getGameID(), command.getAuthToken(), new ServerMessage(ERROR, "This game has ended"));
             }
-            System.out.println("resign called");
         } catch (IOException e) {
-            connections.remove(command.getGameID(), command.getAuthToken());
+            System.out.println("HIDDEN ERROR WAS SKIPPED BROTHER");
         }
     }
 
@@ -140,17 +140,15 @@ public class WebSocketHandler {
     }
 
     private void makeMove(UserGameCommand command)  throws UnauthorizedException{
-        System.out.println("Handler is making move");
         try {
             try {
                 Connection conn = connections.getConnection(command.getGameID(), command.getAuthToken());
                 if (conn == null) {
                     throw new UnauthorizedException("Unauthorized");
                 }
-                if (!canMove) {
+                if (conn.gameOver) {
                     throw new InvalidMoveException("The game is over. No more moves can be made");
                 }
-                System.out.println("connection is good");
                 GameData game = service.makeMove(command.getGameID(), command.getMove(), conn.role);
                 String announcement = announcement(game);
                 if (announcement == null) {
@@ -160,7 +158,8 @@ public class WebSocketHandler {
                     connections.broadcast(command.getGameID(), command.getAuthToken(), notification);
                 } else {
                     ServerMessage board = new ServerMessage(game.game());
-                    ServerMessage notification = new ServerMessage(NOTIFICATION, conn.username + describeMove(command.getMove()) + "\n" + announcement);
+                    ServerMessage notification = new ServerMessage(NOTIFICATION, conn.username
+                            + describeMove(command.getMove()) + "\n" + announcement);
                     connections.broadcast(command.getGameID(), "", board);
                     connections.broadcast(command.getGameID(), command.getAuthToken(), notification);
                 }
@@ -189,15 +188,11 @@ public class WebSocketHandler {
 
     }
 
-    private String gameToJson(GameData game) {
-        return new Gson().toJson(game);
-    }
-
     private String convertPositionToString(ChessPosition position) {
         return COORDINATES.get(position.getColumn()) + position.getRow();
     }
 
-    private HashMap<Integer, String> generateCoordinateMap() {
+    private static HashMap<Integer, String> generateCoordinateMap() {
         HashMap<Integer, String> map = new HashMap<Integer, String>();
         map.put(1, "a");
         map.put(2, "b");
@@ -230,18 +225,15 @@ public class WebSocketHandler {
         String black = gameData.blackUsername();
         if (isCheckmate(gameData, ChessGame.TeamColor.WHITE)) {
             System.out.println("canMove switched due to white checkmate");
-            canMove = false;
-            service.deleteGame(gameData.gameID());
+            connections.setGameOver(gameData.gameID());
             return white + "(white) in checkmate. " + black + " wins!";
         } else if (isCheckmate(gameData, ChessGame.TeamColor.BLACK)) {
             System.out.println("canMove switched due to black checkmate");
-            canMove = false;
-            service.deleteGame(gameData.gameID());
+            connections.setGameOver(gameData.gameID());
             return black + "(white) in checkmate. " + white + " wins!";
         } else if (isStalemate(gameData)) {
             System.out.println("canMove switched due to stalemate");
-            canMove = false;
-            service.deleteGame(gameData.gameID());
+            connections.setGameOver(gameData.gameID());
             return "The game is in stalemate";
         } else if (isCheck(gameData, ChessGame.TeamColor.WHITE)) {
             return white + " (white) in check";
